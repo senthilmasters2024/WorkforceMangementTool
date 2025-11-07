@@ -1,0 +1,2 @@
+# Exclude Gateway Auto Configuration
+# org.springframework.cloud.gateway.server.mvc.GatewayServerMvcAutoConfiguration
