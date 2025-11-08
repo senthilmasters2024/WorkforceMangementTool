@@ -1,6 +1,7 @@
 package com.frauas.workforce.service;
 
 import com.frauas.workforce.model.Employee;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class EmployeeService {
     private final List<Employee> employees = new ArrayList<>();
     private final AtomicLong idCounter = new AtomicLong(1);
+
 
     public EmployeeService() {
         // Add some sample data

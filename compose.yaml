@@ -1,1 +1,39 @@
 services:
+  workforce-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: workforce-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+
+  # Uncomment the following section if you need a PostgreSQL database
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: workforce-db
+  #   environment:
+  #     - POSTGRES_DB=workforce
+  #     - POSTGRES_USER=workforce
+  #     - POSTGRES_PASSWORD=workforce
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U workforce"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+# volumes:
+#   postgres-data:
