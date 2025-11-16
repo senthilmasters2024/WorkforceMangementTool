@@ -9,122 +9,93 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+/**
+ * UpdateProjectRequestDto
+ *
+ * Data Transfer Object for updating an existing project.
+ * Contains all project fields that can be modified with validation constraints.
+ *
+ * Used as request body for PUT /api/projects/{projectId} endpoint.
+ *
+ * @author Workforce Management Team
+ * @version 1.0
+ * @since 2025-11-16
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateProjectRequestDto {
+
+    /**
+     * Project name - required field.
+     * Must not be blank.
+     */
     @NotBlank(message = "Project name is required")
     private String projectName;
 
+    /**
+     * Detailed project description - required field.
+     * Must not be blank.
+     */
     @NotBlank(message = "Project description is required")
     private String projectDescription;
 
+    /**
+     * Project start date and time - required field.
+     * Must be a valid date-time.
+     */
     @NotNull(message = "Project start date is required")
     private LocalDateTime projectStart;
 
+    /**
+     * Project end date and time - required field.
+     * Must be after projectStart date.
+     */
     @NotNull(message = "Project end date is required")
     private LocalDateTime projectEnd;
 
+    /**
+     * Detailed task description - optional field.
+     * Can contain specific deliverables and work items.
+     */
     private String taskDescription;
 
-    public @NotBlank(message = "Project name is required") String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(@NotBlank(message = "Project name is required") String projectName) {
-        this.projectName = projectName;
-    }
-
-    public @NotBlank(message = "Project description is required") String getProjectDescription() {
-        return projectDescription;
-    }
-
-    public void setProjectDescription(@NotBlank(message = "Project description is required") String projectDescription) {
-        this.projectDescription = projectDescription;
-    }
-
-    public @NotNull(message = "Project start date is required") LocalDateTime getProjectStart() {
-        return projectStart;
-    }
-
-    public void setProjectStart(@NotNull(message = "Project start date is required") LocalDateTime projectStart) {
-        this.projectStart = projectStart;
-    }
-
-    public @NotNull(message = "Project end date is required") LocalDateTime getProjectEnd() {
-        return projectEnd;
-    }
-
-    public void setProjectEnd(@NotNull(message = "Project end date is required") LocalDateTime projectEnd) {
-        this.projectEnd = projectEnd;
-    }
-
-    public String getTaskDescription() {
-        return taskDescription;
-    }
-
-    public void setTaskDescription(String taskDescription) {
-        this.taskDescription = taskDescription;
-    }
-
-    public @Min(value = 1, message = "At least 1 employee is required") Integer getNumberOfRequiredEmployees() {
-        return numberOfRequiredEmployees;
-    }
-
-    public void setNumberOfRequiredEmployees(@Min(value = 1, message = "At least 1 employee is required") Integer numberOfRequiredEmployees) {
-        this.numberOfRequiredEmployees = numberOfRequiredEmployees;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public List<String> getLinks() {
-        return links;
-    }
-
-    public void setLinks(List<String> links) {
-        this.links = links;
-    }
-
-    public List<StaffingRequirementDto> getStaffingRequirements() {
-        return staffingRequirements;
-    }
-
-    public void setStaffingRequirements(List<StaffingRequirementDto> staffingRequirements) {
-        this.staffingRequirements = staffingRequirements;
-    }
-
-    public @NotNull(message = "Project status is required") ProjectStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(@NotNull(message = "Project status is required") ProjectStatus status) {
-        this.status = status;
-    }
-
-    public Boolean getIsPublished() {
-        return isPublished;
-    }
-
-    public void setIsPublished(Boolean published) {
-        isPublished = published;
-    }
-
+    /**
+     * Number of employees required - optional field with validation.
+     * Must be at least 1 if provided.
+     */
     @Min(value = 1, message = "At least 1 employee is required")
     private Integer numberOfRequiredEmployees;
 
+    /**
+     * Project location - optional field.
+     * Physical office location or "Remote".
+     */
     private String location;
+
+    /**
+     * List of related resource URLs - optional field.
+     * Can include documentation, repositories, project management tools, etc.
+     */
     private List<String> links;
+
+    /**
+     * List of staffing requirements - optional field.
+     * Defines specific roles, skills, and experience needed.
+     */
     private List<StaffingRequirementDto> staffingRequirements;
 
+    /**
+     * Current project status - required field.
+     * Valid values: PLANNED, OPEN, STAFFING, ACTIVE, COMPLETED
+     */
     @NotNull(message = "Project status is required")
     private ProjectStatus status;
 
+    /**
+     * Publication flag - optional field.
+     * true = visible to all employees, false = draft/hidden
+     */
     private Boolean isPublished;
-
 }

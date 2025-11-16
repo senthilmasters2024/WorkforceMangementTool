@@ -1,0 +1,196 @@
+{
+  "projectName": "Enterprise Resource Planning System",
+  "projectDescription": "Implementation of a comprehensive ERP system to integrate all business processes including finance, HR, supply chain, and customer relationship management. This project aims to streamline operations and provide real-time analytics across all departments.",
+  "projectStart": "2025-12-01T09:00:00",
+  "projectEnd": "2026-12-31T17:00:00",
+  "taskDescription": "Phase 1: Requirements gathering and system design (3 months)\nPhase 2: Core module development - Finance, HR, Inventory (6 months)\nPhase 3: Integration with existing systems (3 months)\nPhase 4: Testing and quality assurance (2 months)\nPhase 5: Deployment and training (1 month)\nPhase 6: Post-launch support and optimization (ongoing)",
+  "numberOfRequiredEmployees": 15,
+  "location": "Frankfurt am Main, Germany",
+  "links": [
+    "https://confluence.company.com/erp-project",
+    "https://jira.company.com/projects/ERP-2025",
+    "https://drive.company.com/erp-documents",
+    "https://teams.company.com/erp-team"
+  ],
+  "staffingRequirements": [
+    {
+      "role": "Project Manager",
+      "requiredCompetencies": [
+        "Project Management",
+        "Agile/Scrum",
+        "Stakeholder Management",
+        "Budget Management"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Senior"
+    },
+    {
+      "role": "Solution Architect",
+      "requiredCompetencies": [
+        "System Architecture",
+        "Enterprise Integration",
+        "Cloud Architecture",
+        "Security Design"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Senior"
+    },
+    {
+      "role": "Backend Developer",
+      "requiredCompetencies": [
+        "Java",
+        "Spring Boot",
+        "Microservices",
+        "MongoDB",
+        "PostgreSQL",
+        "REST API",
+        "Kafka"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Senior"
+    },
+    {
+      "role": "Backend Developer",
+      "requiredCompetencies": [
+        "Java",
+        "Spring Boot",
+        "MongoDB",
+        "REST API"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Mid-Level"
+    },
+    {
+      "role": "Frontend Developer",
+      "requiredCompetencies": [
+        "React",
+        "TypeScript",
+        "Redux",
+        "Material-UI",
+        "Responsive Design"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Senior"
+    },
+    {
+      "role": "Frontend Developer",
+      "requiredCompetencies": [
+        "React",
+        "JavaScript",
+        "CSS",
+        "HTML5"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Junior"
+    },
+    {
+      "role": "DevOps Engineer",
+      "requiredCompetencies": [
+        "Docker",
+        "Kubernetes",
+        "CI/CD",
+        "Jenkins",
+        "AWS",
+        "Terraform",
+        "Monitoring Tools"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Senior"
+    },
+    {
+      "role": "QA Engineer",
+      "requiredCompetencies": [
+        "Test Automation",
+        "Selenium",
+        "JUnit",
+        "API Testing",
+        "Performance Testing"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Mid-Level"
+    },
+    {
+      "role": "Database Administrator",
+      "requiredCompetencies": [
+        "MongoDB",
+        "PostgreSQL",
+        "Database Design",
+        "Performance Tuning",
+        "Backup and Recovery"
+      ],
+      "capacityHoursPerWeek": 30,
+      "experienceLevel": "Senior"
+    },
+    {
+      "role": "UX/UI Designer",
+      "requiredCompetencies": [
+        "User Experience Design",
+        "Figma",
+        "Adobe XD",
+        "Prototyping",
+        "User Research"
+      ],
+      "capacityHoursPerWeek": 35,
+      "experienceLevel": "Mid-Level"
+    },
+    {
+      "role": "Business Analyst",
+      "requiredCompetencies": [
+        "Requirements Analysis",
+        "Process Modeling",
+        "Stakeholder Communication",
+        "Documentation"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Senior"
+    },
+    {
+      "role": "Security Engineer",
+      "requiredCompetencies": [
+        "Application Security",
+        "OWASP",
+        "Penetration Testing",
+        "Security Auditing",
+        "OAuth/JWT"
+      ],
+      "capacityHoursPerWeek": 20,
+      "experienceLevel": "Senior"
+    },
+    {
+      "role": "Data Engineer",
+      "requiredCompetencies": [
+        "ETL",
+        "Data Pipelines",
+        "Apache Spark",
+        "Data Warehousing",
+        "Python"
+      ],
+      "capacityHoursPerWeek": 30,
+      "experienceLevel": "Mid-Level"
+    },
+    {
+      "role": "Technical Writer",
+      "requiredCompetencies": [
+        "Technical Documentation",
+        "API Documentation",
+        "User Manuals",
+        "Markdown"
+      ],
+      "capacityHoursPerWeek": 20,
+      "experienceLevel": "Mid-Level"
+    },
+    {
+      "role": "Support Engineer",
+      "requiredCompetencies": [
+        "Technical Support",
+        "Troubleshooting",
+        "Customer Service",
+        "Ticketing Systems"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Junior"
+    }
+  ],
+  "status": "PLANNED",
+  "isPublished": false
+}

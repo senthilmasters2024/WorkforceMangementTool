@@ -1,5 +1,6 @@
 package com.frauas.workforce.controller;
 
+import com.frauas.workforce.DTO.CreateProjectRequestDto;
 import com.frauas.workforce.DTO.ProjectResponseDto;
 import com.frauas.workforce.DTO.UpdateProjectRequestDto;
 import com.frauas.workforce.model.ProjectStatus;
@@ -16,6 +17,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * ProjectManagerController
+ *
+ * REST API controller for managing project lifecycle operations.
+ * Provides endpoints for creating, retrieving, updating, publishing,
+ * and deleting projects in the workforce management system.
+ *
+ * Base URL: /api/projects
+ *
+ * All endpoints require authentication except where specified.
+ * The authenticated user information is obtained from the Security context.
+ *
+ * @author Workforce Management Team
+ * @version 1.0
+ * @since 2025-11-16
+ */
 @RestController
 @RequestMapping("/api/projects")
 @CrossOrigin(origins = "*")
@@ -24,13 +41,67 @@ public class ProjectManagerController {
     private static final Logger log = LoggerFactory.getLogger(ProjectManagerController.class);
     private  final  ProjectManagerService projectService;
 
+    /**
+     * Constructor for ProjectManagerController.
+     * Dependency injection of ProjectManagerService.
+     *
+     * @param projectService Service layer for project operations
+     */
     public ProjectManagerController(ProjectManagerService projectService) {
         this.projectService = projectService;
     }
 
     /**
-     * Update existing project
-     * PUT /api/projects/{projectId}
+     * Create a new project.
+     *
+     * Endpoint: POST /api/projects
+     *
+     * Creates a new project with the provided details. The authenticated user
+     * is automatically set as the project creator. Validates all required fields
+     * and date constraints before saving.
+     *
+     * @param request CreateProjectRequestDto containing project details (validated)
+     * @param authentication Spring Security authentication object containing current user info
+     * @return ResponseEntity with HTTP 201 (CREATED) and created project details on success
+     *         HTTP 400 (BAD_REQUEST) for validation errors
+     *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
+     */
+    @PostMapping
+    public ResponseEntity<ApiResponse<ProjectResponseDto>> createProject(
+            @Valid @RequestBody CreateProjectRequestDto request,
+            Authentication authentication) {
+
+        try {
+            String currentUserId = authentication.getName(); // Get current user from authentication
+            ProjectResponseDto response = projectService.createProject(request, currentUserId);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.success(response, "Project created successfully"));
+        } catch (IllegalArgumentException e) {
+            log.error("Validation error creating project: ", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Validation error", e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error creating project: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to create project", e.getMessage()));
+        }
+    }
+
+    /**
+     * Update an existing project.
+     *
+     * Endpoint: PUT /api/projects/{projectId}
+     *
+     * Updates all fields of an existing project. The authenticated user
+     * is recorded as the last updater. Automatically updates the updatedAt timestamp.
+     *
+     * @param projectId Path variable - unique identifier of the project to update
+     * @param request UpdateProjectRequestDto containing updated project details (validated)
+     * @param authentication Spring Security authentication object containing current user info
+     * @return ResponseEntity with HTTP 200 (OK) and updated project details on success
+     *         HTTP 400 (BAD_REQUEST) for validation errors
+     *         HTTP 404 (NOT_FOUND) if project doesn't exist
+     *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
      */
     @PutMapping("/{projectId}")
     public ResponseEntity<ApiResponse<ProjectResponseDto>> updateProject(
@@ -50,8 +121,16 @@ public class ProjectManagerController {
     }
 
     /**
-     * Get project by ID
-     * GET /api/projects/{projectId}
+     * Retrieve a single project by its ID.
+     *
+     * Endpoint: GET /api/projects/{projectId}
+     *
+     * Fetches detailed information about a specific project.
+     *
+     * @param projectId Path variable - unique identifier of the project to retrieve
+     * @return ResponseEntity with HTTP 200 (OK) and project details on success
+     *         HTTP 404 (NOT_FOUND) if project doesn't exist
+     *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
      */
     @GetMapping("/{projectId}")
     public ResponseEntity<ApiResponse<ProjectResponseDto>> getProjectById(@PathVariable String projectId) {
@@ -66,8 +145,15 @@ public class ProjectManagerController {
     }
 
     /**
-     * Get all projects
-     * GET /api/projects
+     * Retrieve all projects in the system.
+     *
+     * Endpoint: GET /api/projects
+     *
+     * Fetches all projects regardless of status or publication state.
+     * Useful for admin dashboards and comprehensive project listings.
+     *
+     * @return ResponseEntity with HTTP 200 (OK) and list of all projects on success
+     *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
      */
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProjectResponseDto>>> getAllProjects() {
@@ -82,8 +168,17 @@ public class ProjectManagerController {
     }
 
     /**
-     * Get projects by status
-     * GET /api/projects/status/{status}
+     * Retrieve projects filtered by status.
+     *
+     * Endpoint: GET /api/projects/status/{status}
+     *
+     * Fetches all projects with a specific lifecycle status.
+     * Useful for filtering projects by their current stage.
+     *
+     * @param status Path variable - project status to filter by
+     *               (Valid values: PLANNED, OPEN, STAFFING, ACTIVE, COMPLETED)
+     * @return ResponseEntity with HTTP 200 (OK) and list of matching projects on success
+     *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
      */
     @GetMapping("/status/{status}")
     public ResponseEntity<ApiResponse<List<ProjectResponseDto>>> getProjectsByStatus(
@@ -99,8 +194,16 @@ public class ProjectManagerController {
     }
 
     /**
-     * Get projects by creator
-     * GET /api/projects/my-projects
+     * Retrieve projects created by the current authenticated user.
+     *
+     * Endpoint: GET /api/projects/my-projects
+     *
+     * Fetches all projects where the authenticated user is the creator.
+     * Useful for "My Projects" views in project manager dashboards.
+     *
+     * @param authentication Spring Security authentication object containing current user info
+     * @return ResponseEntity with HTTP 200 (OK) and list of user's projects on success
+     *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
      */
     @GetMapping("/my-projects")
     public ResponseEntity<ApiResponse<List<ProjectResponseDto>>> getMyProjects(Authentication authentication) {
@@ -116,8 +219,18 @@ public class ProjectManagerController {
     }
 
     /**
-     * Publish project
-     * PATCH /api/projects/{projectId}/publish
+     * Publish a project to make it visible to all employees.
+     *
+     * Endpoint: PATCH /api/projects/{projectId}/publish
+     *
+     * Changes the project's publication status to make it discoverable
+     * and visible to employees for assignment or viewing.
+     *
+     * @param projectId Path variable - unique identifier of the project to publish
+     * @param authentication Spring Security authentication object containing current user info
+     * @return ResponseEntity with HTTP 200 (OK) and published project details on success
+     *         HTTP 404 (NOT_FOUND) if project doesn't exist
+     *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
      */
     @PatchMapping("/{projectId}/publish")
     public ResponseEntity<ApiResponse<ProjectResponseDto>> publishProject(
@@ -135,8 +248,21 @@ public class ProjectManagerController {
     }
 
     /**
-     * Update project status
-     * PATCH /api/projects/{projectId}/status
+     * Update the lifecycle status of a project.
+     *
+     * Endpoint: PATCH /api/projects/{projectId}/status
+     *
+     * Transitions a project through its lifecycle stages
+     * (PLANNED → OPEN → STAFFING → ACTIVE → COMPLETED).
+     * Used for workflow management and progress tracking.
+     *
+     * @param projectId Path variable - unique identifier of the project
+     * @param status Request parameter - new status to set
+     *               (Valid values: PLANNED, OPEN, STAFFING, ACTIVE, COMPLETED)
+     * @param authentication Spring Security authentication object containing current user info
+     * @return ResponseEntity with HTTP 200 (OK) and updated project details on success
+     *         HTTP 404 (NOT_FOUND) if project doesn't exist
+     *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
      */
     @PatchMapping("/{projectId}/status")
     public ResponseEntity<ApiResponse<ProjectResponseDto>> updateProjectStatus(
@@ -155,8 +281,17 @@ public class ProjectManagerController {
     }
 
     /**
-     * Delete project
-     * DELETE /api/projects/{projectId}
+     * Delete a project permanently from the system.
+     *
+     * Endpoint: DELETE /api/projects/{projectId}
+     *
+     * Permanently removes a project from the database.
+     * This operation is irreversible - use with caution.
+     *
+     * @param projectId Path variable - unique identifier of the project to delete
+     * @return ResponseEntity with HTTP 200 (OK) and success message on completion
+     *         HTTP 404 (NOT_FOUND) if project doesn't exist
+     *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
      */
     @DeleteMapping("/{projectId}")
     public ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable String projectId) {

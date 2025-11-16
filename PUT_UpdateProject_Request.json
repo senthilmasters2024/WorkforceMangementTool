@@ -1,0 +1,96 @@
+{
+  "projectName": "Mobile App Development For Airport Services - UPDATED",
+  "projectDescription": "Enhanced iOS and Android mobile application for customer portal with new features including offline mode, real-time push notifications, biometric authentication, and improved user experience. This updated scope includes integration with airport systems and third-party services.",
+  "projectStart": "2025-12-15T08:00:00",
+  "projectEnd": "2026-09-30T18:00:00",
+  "taskDescription": "Phase 1: Requirements Analysis & UI/UX Design (2 months)\nPhase 2: iOS Application Development (3 months)\nPhase 3: Android Application Development (3 months)\nPhase 4: Backend API Integration & Security (2 months)\nPhase 5: Offline Mode & Sync Implementation (1.5 months)\nPhase 6: Testing, QA & Performance Optimization (1.5 months)\nPhase 7: Deployment to App Stores & Training (1 month)",
+  "numberOfRequiredEmployees": 10,
+  "location": "Frankfurt Main Office",
+  "links": [
+    "https://design.company.com/mobile-app-mockups",
+    "https://jira.company.com/projects/AIRPORT-MOBILE",
+    "https://github.com/company/airport-mobile-app",
+    "https://confluence.company.com/mobile-app-documentation"
+  ],
+  "staffingRequirements": [
+    {
+      "role": "Senior iOS Developer",
+      "requiredCompetencies": [
+        "Swift",
+        "SwiftUI",
+        "Xcode",
+        "CoreData",
+        "Push Notifications",
+        "Biometric Authentication",
+        "Offline Storage"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Senior"
+    },
+    {
+      "role": "Senior Android Developer",
+      "requiredCompetencies": [
+        "Kotlin",
+        "Jetpack Compose",
+        "Android SDK",
+        "Room Database",
+        "Firebase",
+        "Biometric APIs",
+        "WorkManager"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Senior"
+    },
+    {
+      "role": "Backend Developer",
+      "requiredCompetencies": [
+        "Java",
+        "Spring Boot",
+        "MongoDB",
+        "REST API",
+        "Microservices",
+        "API Security"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Mid-Level"
+    },
+    {
+      "role": "UI/UX Designer",
+      "requiredCompetencies": [
+        "Figma",
+        "Mobile Design",
+        "Prototyping",
+        "User Research",
+        "Accessibility"
+      ],
+      "capacityHoursPerWeek": 35,
+      "experienceLevel": "Mid-Level"
+    },
+    {
+      "role": "QA Engineer",
+      "requiredCompetencies": [
+        "Mobile Testing",
+        "Appium",
+        "Test Automation",
+        "Performance Testing",
+        "Security Testing"
+      ],
+      "capacityHoursPerWeek": 40,
+      "experienceLevel": "Mid-Level"
+    },
+    {
+      "role": "DevOps Engineer",
+      "requiredCompetencies": [
+        "CI/CD",
+        "Jenkins",
+        "Fastlane",
+        "App Store Deployment",
+        "Mobile Analytics"
+      ],
+      "capacityHoursPerWeek": 30,
+      "experienceLevel": "Senior"
+    }
+  ],
+  "status": "ACTIVE",
+  "isPublished": true
+}

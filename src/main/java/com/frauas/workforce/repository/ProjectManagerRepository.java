@@ -8,21 +8,66 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
+/**
+ * ProjectManagerRepository Interface
+ *
+ * Repository interface for performing CRUD operations and custom queries
+ * on Project entities in MongoDB. Extends MongoRepository to provide
+ * built-in methods for database operations and defines custom query methods
+ * for project-specific searches.
+ *
+ * @author Workforce Management Team
+ * @version 1.0
+ * @since 2025-11-16
+ */
 @Repository
 public interface ProjectManagerRepository extends MongoRepository<Project, String>{
-    // Find all published projects
+
+    /**
+     * Find all projects filtered by publication status.
+     *
+     * @param isPublished Boolean flag - true for published projects, false for draft projects
+     * @return List of projects matching the publication status
+     */
     List<Project> findByIsPublished(Boolean isPublished);
 
-    // Find projects by status
+    /**
+     * Find all projects by their current status.
+     *
+     * @param status The project status (PLANNED, OPEN, STAFFING, ACTIVE, COMPLETED)
+     * @return List of projects with the specified status
+     */
     List<Project> findByStatus(ProjectStatus status);
 
-    // Find projects by created by (Project Manager)
+    /**
+     * Find all projects created by a specific user.
+     * Useful for showing a project manager's portfolio of projects.
+     *
+     * @param createdBy User ID of the project creator (typically a project manager)
+     * @return List of projects created by the specified user
+     */
     List<Project> findByCreatedBy(String createdBy);
 
-    // Find published projects by status
+    /**
+     * Find projects that match both publication status and project status.
+     * Useful for finding published projects in a specific lifecycle stage.
+     *
+     * @param isPublished Boolean flag for publication status
+     * @param status The project status to filter by
+     * @return List of projects matching both criteria
+     */
     List<Project> findByIsPublishedAndStatus(Boolean isPublished, ProjectStatus status);
 
-    // Custom query to find projects by location
+    /**
+     * Find projects by location using case-insensitive pattern matching.
+     * Uses MongoDB regex query to perform partial, case-insensitive matching.
+     *
+     * Example: "frank" will match "Frankfurt", "frankfurt", "FRANKFURT"
+     *
+     * @param location Location string or partial location to search for
+     * @return List of projects with matching locations
+     */
     @Query("{ 'location': { $regex: ?0, $options: 'i' } }")
     List<Project> findByLocationContainingIgnoreCase(String location);
 }
