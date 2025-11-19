@@ -20,8 +20,7 @@ public class Employee {
     @Field("employeeId")
     private int employeeId;
 
-    @Field("userId")
-    private int userId;
+    private String userId;
 
     @Field("remoteWorking")
     private Boolean remoteWorking;
@@ -52,7 +51,4 @@ public class Employee {
 
     @Field("role")
     private Role role;
-
-    public Employee(Object o, String admin, String admin123, String system, String admin1, String mail, String it, String systemAdministrator, com.frauas.workforce.model.Role role) {
-    }
 }

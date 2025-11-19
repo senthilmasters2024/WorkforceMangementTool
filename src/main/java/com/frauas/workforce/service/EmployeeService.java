@@ -25,55 +25,67 @@ public class EmployeeService {
         // Add sample data with different roles if database is empty
         if (employeeRepository.count() == 0) {
             // System Admins (password: admin123)
-            Employee admin = new Employee(null, "admin", passwordEncoder.encode("admin123"),
+            Employee admin = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "admin", passwordEncoder.encode("admin123"),
                     "System", "Admin", "admin@workforce.com", "IT", "System Administrator", Role.SYSTEM_ADMIN);
             employeeRepository.save(admin);
 
             // Project Managers (password: pm123)
-            Employee projectManager1 = new Employee(null, "pm_john", passwordEncoder.encode("pm123"),
+            Employee projectManager1 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "pm_john", passwordEncoder.encode("pm123"),
                     "John", "Doe", "john.doe@workforce.com", "IT", "Project Manager", Role.PROJECT_MANAGER);
             employeeRepository.save(projectManager1);
 
-            Employee projectManager2 = new Employee(null, "pm_sarah", passwordEncoder.encode("pm123"),
+            Employee projectManager2 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "pm_sarah", passwordEncoder.encode("pm123"),
                     "Sarah", "Connor", "sarah.connor@workforce.com", "Engineering", "Project Manager", Role.PROJECT_MANAGER);
             employeeRepository.save(projectManager2);
 
             // Department Heads (password: dh123)
-            Employee deptHead1 = new Employee(null, "dh_jane", passwordEncoder.encode("dh123"),
+            Employee deptHead1 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "dh_jane", passwordEncoder.encode("dh123"),
                     "Jane", "Smith", "jane.smith@workforce.com", "HR", "Department Head", Role.DEPARTMENT_HEAD);
             employeeRepository.save(deptHead1);
 
-            Employee deptHead2 = new Employee(null, "dh_michael", passwordEncoder.encode("dh123"),
+            Employee deptHead2 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "dh_michael", passwordEncoder.encode("dh123"),
                     "Michael", "Brown", "michael.brown@workforce.com", "Finance", "Department Head", Role.DEPARTMENT_HEAD);
             employeeRepository.save(deptHead2);
 
             // Resource Planners (password: rp123)
-            Employee planner1 = new Employee(null, "rp_bob", passwordEncoder.encode("rp123"),
+            Employee planner1 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "rp_bob", passwordEncoder.encode("rp123"),
                     "Bob", "Johnson", "bob.johnson@workforce.com", "Operations", "Resource Planner", Role.RESOURCE_PLANNER);
             employeeRepository.save(planner1);
 
-            Employee planner2 = new Employee(null, "rp_lisa", passwordEncoder.encode("rp123"),
+            Employee planner2 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "rp_lisa", passwordEncoder.encode("rp123"),
                     "Lisa", "Davis", "lisa.davis@workforce.com", "HR", "Resource Planner", Role.RESOURCE_PLANNER);
             employeeRepository.save(planner2);
 
             // Regular Employees (password: emp123)
-            Employee employee1 = new Employee(null, "emp_alice", passwordEncoder.encode("emp123"),
+            Employee employee1 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "emp_alice", passwordEncoder.encode("emp123"),
                     "Alice", "Williams", "alice.williams@workforce.com", "IT", "Software Engineer", Role.EMPLOYEE);
             employeeRepository.save(employee1);
 
-            Employee employee2 = new Employee(null, "emp_tom", passwordEncoder.encode("emp123"),
+            Employee employee2 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "emp_tom", passwordEncoder.encode("emp123"),
                     "Tom", "Anderson", "tom.anderson@workforce.com", "IT", "Backend Developer", Role.EMPLOYEE);
             employeeRepository.save(employee2);
 
-            Employee employee3 = new Employee(null, "emp_emma", passwordEncoder.encode("emp123"),
+            Employee employee3 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "emp_emma", passwordEncoder.encode("emp123"),
                     "Emma", "Wilson", "emma.wilson@workforce.com", "Marketing", "Marketing Specialist", Role.EMPLOYEE);
             employeeRepository.save(employee3);
 
-            Employee employee4 = new Employee(null, "emp_david", passwordEncoder.encode("emp123"),
+            Employee employee4 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "emp_david", passwordEncoder.encode("emp123"),
                     "David", "Martinez", "david.martinez@workforce.com", "Finance", "Financial Analyst", Role.EMPLOYEE);
             employeeRepository.save(employee4);
 
-            Employee employee5 = new Employee(null, "emp_sophia", passwordEncoder.encode("emp123"),
+            Employee employee5 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
+                    "emp_sophia", passwordEncoder.encode("emp123"),
                     "Sophia", "Garcia", "sophia.garcia@workforce.com", "HR", "HR Specialist", Role.EMPLOYEE);
             employeeRepository.save(employee5);
         }
@@ -88,6 +100,11 @@ public class EmployeeService {
     }
 
     public Employee createEmployee(Employee employee) {
+        // Generate userId if not provided
+        if (employee.getUserId() == null || employee.getUserId().isEmpty()) {
+            employee.setUserId(java.util.UUID.randomUUID().toString());
+        }
+
         // Encode password before saving
         if (employee.getPassword() != null && !employee.getPassword().isEmpty()) {
             employee.setPassword(passwordEncoder.encode(employee.getPassword()));
@@ -104,6 +121,9 @@ public class EmployeeService {
             employee.setDepartment(employeeDetails.getDepartment());
             employee.setPosition(employeeDetails.getPosition());
             employee.setRole(employeeDetails.getRole());
+            employee.setEmployeeId(employeeDetails.getEmployeeId());
+            employee.setRemoteWorking(employeeDetails.getRemoteWorking());
+            employee.setUserId(employeeDetails.getUserId());
 
             // Only update password if provided
             if (employeeDetails.getPassword() != null && !employeeDetails.getPassword().isEmpty()) {
