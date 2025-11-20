@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,75 +28,29 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateProjectRequestDto {
 
-    /**
-     * Project name - required field.
-     * Must not be blank.
-     */
-    @NotBlank(message = "Project name is required")
-    private String projectName;
-
-    /**
-     * Detailed project description - required field.
-     * Must not be blank.
-     */
     @NotBlank(message = "Project description is required")
     private String projectDescription;
 
-    /**
-     * Project start date and time - required field.
-     * Must be a valid date-time.
-     */
     @NotNull(message = "Project start date is required")
-    private LocalDateTime projectStart;
+    private LocalDate projectStart;
 
-    /**
-     * Project end date and time - required field.
-     * Must be after projectStart date.
-     */
     @NotNull(message = "Project end date is required")
-    private LocalDateTime projectEnd;
+    private LocalDate projectEnd;
 
-    /**
-     * Detailed task description - optional field.
-     * Can contain specific deliverables and work items.
-     */
     private String taskDescription;
 
-    /**
-     * Number of employees required - optional field with validation.
-     * Must be at least 1 if provided.
-     */
-    @Min(value = 1, message = "At least 1 employee is required")
-    private Integer numberOfRequiredEmployees;
+    private Integer requiredEmployees;
 
-    /**
-     * Project location - optional field.
-     * Physical office location or "Remote".
-     */
-    private String location;
+    private String links;
 
-    /**
-     * List of related resource URLs - optional field.
-     * Can include documentation, repositories, project management tools, etc.
-     */
-    private List<String> links;
+    private List<String> selectedSkills;
 
-    /**
-     * List of staffing requirements - optional field.
-     * Defines specific roles, skills, and experience needed.
-     */
-    private List<StaffingRequirementDto> staffingRequirements;
+    private List<String> selectedLocations;
 
-    /**
-     * Current project status - required field.
-     * Valid values: PLANNED, OPEN, STAFFING, ACTIVE, COMPLETED
-     */
+    private List<RoleRequirementDto> roles;
+
     @NotNull(message = "Project status is required")
     private ProjectStatus status;
 
-    /**
-     * Publication flag - optional field.
-     * true = visible to all employees, false = draft/hidden
-     */
     private Boolean isPublished;
 }

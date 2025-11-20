@@ -70,4 +70,32 @@ public interface ProjectManagerRepository extends MongoRepository<Project, Strin
      */
     @Query("{ 'location': { $regex: ?0, $options: 'i' } }")
     List<Project> findByLocationContainingIgnoreCase(String location);
+
+    /**
+     * Find all projects where a specific employee is assigned.
+     * Searches in the assignedEmployees array field of the project document.
+     * Useful for displaying "My Assigned Projects" in employee dashboard.
+     *
+     * @param employeeId User ID of the employee
+     * @return List of projects where the employee is in the assignedEmployees list
+     */
+    @Query("{ 'assignedEmployees': ?0 }")
+    List<Project> findByAssignedEmployeesContaining(String employeeId);
+
+    /**
+     * Find all projects related to an employee in any capacity.
+     * Searches across three fields: assignedEmployees, createdBy, and updatedBy.
+     * This provides a comprehensive view of all projects an employee is involved with.
+     *
+     * Use cases:
+     * - Employee is assigned to the project
+     * - Employee created the project
+     * - Employee last updated the project
+     *
+     * @param employeeId User ID of the employee
+     * @return List of projects where employee is assigned, creator, or last updater
+     */
+    @Query("{ $or: [ { 'assignedEmployees': ?0 }, { 'createdBy': ?0 }, { 'updatedBy': ?0 } ] }")
+    List<Project> findProjectsByEmployeeId(String employeeId);
+
 }

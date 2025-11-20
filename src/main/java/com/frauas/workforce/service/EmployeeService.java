@@ -4,6 +4,8 @@ import com.frauas.workforce.model.Employee;
 import com.frauas.workforce.model.Role;
 import com.frauas.workforce.repository.EmployeeRepository;
 import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmployeeService {
 
     @Autowired
@@ -27,66 +31,66 @@ public class EmployeeService {
             // System Admins (password: admin123)
             Employee admin = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "admin", passwordEncoder.encode("admin123"),
-                    "System", "Admin", "admin@workforce.com", "IT", "System Administrator", Role.SYSTEM_ADMIN);
+                    "System", "Admin", "admin@workforce.com", "IT", "System Administrator", Role.SYSTEM_ADMIN, "msg");
             employeeRepository.save(admin);
 
             // Project Managers (password: pm123)
             Employee projectManager1 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "pm_john", passwordEncoder.encode("pm123"),
-                    "John", "Doe", "john.doe@workforce.com", "IT", "Project Manager", Role.PROJECT_MANAGER);
+                    "John", "Doe", "john.doe@workforce.com", "IT", "Project Manager", Role.PROJECT_MANAGER, "msg");
             employeeRepository.save(projectManager1);
 
             Employee projectManager2 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "pm_sarah", passwordEncoder.encode("pm123"),
-                    "Sarah", "Connor", "sarah.connor@workforce.com", "Engineering", "Project Manager", Role.PROJECT_MANAGER);
+                    "Sarah", "Connor", "sarah.connor@workforce.com", "Engineering", "Project Manager", Role.PROJECT_MANAGER, "msg");
             employeeRepository.save(projectManager2);
 
             // Department Heads (password: dh123)
             Employee deptHead1 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "dh_jane", passwordEncoder.encode("dh123"),
-                    "Jane", "Smith", "jane.smith@workforce.com", "HR", "Department Head", Role.DEPARTMENT_HEAD);
+                    "Jane", "Smith", "jane.smith@workforce.com", "HR", "Department Head", Role.DEPARTMENT_HEAD, "msg");
             employeeRepository.save(deptHead1);
 
             Employee deptHead2 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "dh_michael", passwordEncoder.encode("dh123"),
-                    "Michael", "Brown", "michael.brown@workforce.com", "Finance", "Department Head", Role.DEPARTMENT_HEAD);
+                    "Michael", "Brown", "michael.brown@workforce.com", "Finance", "Department Head", Role.DEPARTMENT_HEAD, "msg");
             employeeRepository.save(deptHead2);
 
             // Resource Planners (password: rp123)
             Employee planner1 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "rp_bob", passwordEncoder.encode("rp123"),
-                    "Bob", "Johnson", "bob.johnson@workforce.com", "Operations", "Resource Planner", Role.RESOURCE_PLANNER);
+                    "Bob", "Johnson", "bob.johnson@workforce.com", "Operations", "Resource Planner", Role.RESOURCE_PLANNER, "msg");
             employeeRepository.save(planner1);
 
             Employee planner2 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "rp_lisa", passwordEncoder.encode("rp123"),
-                    "Lisa", "Davis", "lisa.davis@workforce.com", "HR", "Resource Planner", Role.RESOURCE_PLANNER);
+                    "Lisa", "Davis", "lisa.davis@workforce.com", "HR", "Resource Planner", Role.RESOURCE_PLANNER, "msg");
             employeeRepository.save(planner2);
 
             // Regular Employees (password: emp123)
             Employee employee1 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "emp_alice", passwordEncoder.encode("emp123"),
-                    "Alice", "Williams", "alice.williams@workforce.com", "IT", "Software Engineer", Role.EMPLOYEE);
+                    "Alice", "Williams", "alice.williams@workforce.com", "IT", "Software Engineer", Role.EMPLOYEE, "msg");
             employeeRepository.save(employee1);
 
             Employee employee2 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "emp_tom", passwordEncoder.encode("emp123"),
-                    "Tom", "Anderson", "tom.anderson@workforce.com", "IT", "Backend Developer", Role.EMPLOYEE);
+                    "Tom", "Anderson", "tom.anderson@workforce.com", "IT", "Backend Developer", Role.EMPLOYEE, "msg");
             employeeRepository.save(employee2);
 
             Employee employee3 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "emp_emma", passwordEncoder.encode("emp123"),
-                    "Emma", "Wilson", "emma.wilson@workforce.com", "Marketing", "Marketing Specialist", Role.EMPLOYEE);
+                    "Emma", "Wilson", "emma.wilson@workforce.com", "Marketing", "Marketing Specialist", Role.EMPLOYEE, "msg");
             employeeRepository.save(employee3);
 
             Employee employee4 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "emp_david", passwordEncoder.encode("emp123"),
-                    "David", "Martinez", "david.martinez@workforce.com", "Finance", "Financial Analyst", Role.EMPLOYEE);
+                    "David", "Martinez", "david.martinez@workforce.com", "Finance", "Financial Analyst", Role.EMPLOYEE, "msg");
             employeeRepository.save(employee4);
 
             Employee employee5 = new Employee(null, 0, java.util.UUID.randomUUID().toString(), false,
                     "emp_sophia", passwordEncoder.encode("emp123"),
-                    "Sophia", "Garcia", "sophia.garcia@workforce.com", "HR", "HR Specialist", Role.EMPLOYEE);
+                    "Sophia", "Garcia", "sophia.garcia@workforce.com", "HR", "HR Specialist", Role.EMPLOYEE, "msg");
             employeeRepository.save(employee5);
         }
     }

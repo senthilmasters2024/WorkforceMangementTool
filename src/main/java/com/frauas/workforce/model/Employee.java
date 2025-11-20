@@ -51,4 +51,7 @@ public class Employee {
 
     @Field("role")
     private Role role;
+
+    @Field("message")
+    private String message;
 }

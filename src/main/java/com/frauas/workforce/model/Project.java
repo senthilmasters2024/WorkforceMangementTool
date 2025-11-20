@@ -1,11 +1,13 @@
 package com.frauas.workforce.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import java.util.List;
  * @since 2025-11-16
  */
 @Data
+@AllArgsConstructor
 @Document(collection = "projects")
 public class Project {
 
@@ -32,157 +35,62 @@ public class Project {
     @Id
     private String id;
 
-    /**
-     * Name of the project.
-     * Required field that provides a brief title for the project.
-     */
-    private String projectName;
+    private String projectId;
 
-    /**
-     * Detailed description of the project.
-     * Contains comprehensive information about project objectives and scope.
-     */
     private String projectDescription;
 
-    /**
-     * Project start date and time.
-     * Indicates when the project is scheduled to begin.
-     */
-    private LocalDateTime projectStart;
+    private LocalDate projectStart;
 
-    /**
-     * Project end date and time.
-     * Indicates when the project is scheduled to be completed.
-     * Must be after projectStart date.
-     */
-    private LocalDateTime projectEnd;
+    private LocalDate projectEnd;
 
-    /**
-     * Detailed description of tasks to be performed.
-     * Contains information about specific deliverables and work items.
-     */
     private String taskDescription;
 
-    /**
-     * Total number of employees required for the project.
-     * Minimum value is 1.
-     */
-    private Integer numberOfRequiredEmployees;
+    // Changed from Integer to String
+    private Integer requiredEmployees;
 
-    /**
-     * Physical or remote location where the project will be executed.
-     * Can be office location, city, or "Remote".
-     */
-    private String location;
+    // Changed from List<String> to String
+    private String links;
 
-    /**
-     * List of related URLs and resources.
-     * May include documentation links, project management tools, repositories, etc.
-     */
-    private List<String> links;
+    // NEW fields
+    private List<String> selectedSkills;
+    private List<String> selectedLocations;
 
-    /**
-     * List of specific staffing requirements for different roles.
-     * Each requirement defines role, competencies, capacity, and experience level.
-     */
-    private List<StaffingRequirement> staffingRequirements;
+    // Updated field - now stores RoleRequirement objects
+    private List<RoleRequirement> roles;
 
-    /**
-     * Current status of the project.
-     * Valid values: PLANNED, OPEN, STAFFING, ACTIVE, COMPLETED
-     */
     private ProjectStatus status;
 
-    /**
-     * Flag indicating whether the project is published and visible to employees.
-     * True = visible to all, False = draft/hidden
-     */
-    private Boolean isPublished;
+    private Boolean isPublished = false;
 
-    /**
-     * ID of the user who created this project.
-     * Typically a project manager or admin user.
-     */
     private String createdBy;
 
-    /**
-     * Timestamp when the project was created.
-     * Automatically set by Spring Data MongoDB.
-     */
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
-    /**
-     * Timestamp when the project was last updated.
-     * Automatically updated by Spring Data MongoDB on save.
-     */
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private LocalDate updatedAt;
 
-    /**
-     * ID of the user who last updated this project.
-     * Updated manually during update operations.
-     */
     private String updatedBy;
 
-    // -------------------------------------------------------------------
-    // NESTED CLASS - STAFFING REQUIREMENT
-    // -------------------------------------------------------------------
+    public Project() {
 
-    /**
-     * StaffingRequirement Nested Class
-     *
-     * Represents specific staffing requirements for a particular role in the project.
-     * Defines the skills, experience level, and time commitment needed for each role.
-     */
+    }
+
     @Data
-    public static class StaffingRequirement {
-
-        /**
-         * Job role or position title.
-         * Examples: "Senior Backend Developer", "DevOps Engineer", "Project Manager"
-         */
-        private String role;
-
-        /**
-         * List of required technical or soft skills/competencies.
-         * Examples: ["Java", "Spring Boot", "MongoDB"], ["AWS", "Docker", "Kubernetes"]
-         */
+    @AllArgsConstructor
+    public static class RoleRequirement {
+        private String requiredRole;
         private List<String> requiredCompetencies;
+        private String capacity;
+        private String numberOfEmployees;
+        private String roleInput;
+        private String competencyInput;
+        private Boolean showRoleDropdown;
+        private Boolean showCompetencyDropdown;
 
-        /**
-         * Number of hours per week required for this role.
-         * Typically ranges from part-time (10-20 hours) to full-time (40 hours).
-         */
-        private Integer capacityHoursPerWeek;
-
-        /**
-         * Required experience level for the role.
-         * Examples: "Junior", "Mid-Level", "Senior", "Expert"
-         */
-        private String experienceLevel;
-
-        /**
-         * Default constructor for StaffingRequirement.
-         */
-        public StaffingRequirement() {}
-
-        /**
-         * Parameterized constructor for StaffingRequirement.
-         *
-         * @param role The job role or position title
-         * @param requiredCompetencies List of required skills and competencies
-         * @param capacityHoursPerWeek Number of hours per week needed
-         * @param experienceLevel Required experience level (Junior/Mid-Level/Senior/Expert)
-         */
-        public StaffingRequirement(String role,
-                                   List<String> requiredCompetencies,
-                                   Integer capacityHoursPerWeek,
-                                   String experienceLevel) {
-            this.role = role;
-            this.requiredCompetencies = requiredCompetencies;
-            this.capacityHoursPerWeek = capacityHoursPerWeek;
-            this.experienceLevel = experienceLevel;
+        public RoleRequirement() {
+            this.showRoleDropdown = false;
+            this.showCompetencyDropdown = false;
         }
     }
 }

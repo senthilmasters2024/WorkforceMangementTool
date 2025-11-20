@@ -1,9 +1,6 @@
 package com.frauas.workforce.service;
 
-import com.frauas.workforce.DTO.CreateProjectRequestDto;
-import com.frauas.workforce.DTO.ProjectResponseDto;
-import com.frauas.workforce.DTO.StaffingRequirementDto;
-import com.frauas.workforce.DTO.UpdateProjectRequestDto;
+import com.frauas.workforce.DTO.*;
 import com.frauas.workforce.ExceptionHandling.ResourceNotFoundException;
 import com.frauas.workforce.model.Project;
 import com.frauas.workforce.model.ProjectStatus;
@@ -18,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -60,7 +58,7 @@ public class ProjectManagerService {
      * @throws IllegalArgumentException if project end date is before start date
      */
     public ProjectResponseDto createProject(CreateProjectRequestDto request, String currentUserId) {
-        log.info("Creating new project: {}", request.getProjectName());
+        log.info("Creating new project by user: {}", currentUserId);
 
         // Validate dates
         if (request.getProjectEnd().isBefore(request.getProjectStart())) {
@@ -69,33 +67,40 @@ public class ProjectManagerService {
 
         // Create new project entity
         Project project = new Project();
-        project.setProjectName(request.getProjectName());
+        project.setProjectId(java.util.UUID.randomUUID().toString());
         project.setProjectDescription(request.getProjectDescription());
         project.setProjectStart(request.getProjectStart());
         project.setProjectEnd(request.getProjectEnd());
         project.setTaskDescription(request.getTaskDescription());
-        project.setNumberOfRequiredEmployees(request.getNumberOfRequiredEmployees());
-        project.setLocation(request.getLocation());
+        project.setRequiredEmployees(request.getRequiredEmployees());
         project.setLinks(request.getLinks());
+        project.setSelectedSkills(request.getSelectedSkills());
+        project.setSelectedLocations(request.getSelectedLocations());
         project.setStatus(request.getStatus());
         project.setIsPublished(request.getIsPublished() != null ? request.getIsPublished() : false);
         project.setCreatedBy(currentUserId);
 
-        // Map staffing requirements
-        if (request.getStaffingRequirements() != null) {
-            List<Project.StaffingRequirement> staffingReqs = request.getStaffingRequirements().stream()
-                    .map(dto -> new Project.StaffingRequirement(
-                            dto.getRole(),
+        // Map role requirements
+        if (request.getRoles() != null) {
+            List<Project.RoleRequirement> roleReqs = request.getRoles().stream()
+                    .map(dto -> new Project.RoleRequirement(
+                            dto.getRequiredRole(),
                             dto.getRequiredCompetencies(),
-                            dto.getCapacityHoursPerWeek(),
-                            dto.getExperienceLevel()
+                            dto.getCapacity(),
+                            dto.getNumberOfEmployees(),
+                            dto.getRoleInput(),
+                            dto.getCompetencyInput(),
+                            dto.getShowRoleDropdown(),
+                            dto.getShowCompetencyDropdown()
                     ))
                     .collect(Collectors.toList());
-            project.setStaffingRequirements(staffingReqs);
+            project.setRoles(roleReqs);
         }
-
+        System.out.println("Generated projectId before save: " + project.getProjectId());
+        log.info("Saving project with projectId={}", project.getProjectId());
         Project savedProject = projectRepository.save(project);
-        log.info("Project created successfully with ID: {}", savedProject.getId());
+        System.out.println("Project created successfully with ID: " + project.getProjectId());
+        log.info("Project created successfully with ID: {}", savedProject.getProjectId());
 
         return mapToResponse(savedProject);
     }
@@ -126,29 +131,33 @@ public class ProjectManagerService {
         }
 
         // Update project fields
-        project.setProjectName(request.getProjectName());
         project.setProjectDescription(request.getProjectDescription());
         project.setProjectStart(request.getProjectStart());
         project.setProjectEnd(request.getProjectEnd());
         project.setTaskDescription(request.getTaskDescription());
-        project.setNumberOfRequiredEmployees(request.getNumberOfRequiredEmployees());
-        project.setLocation(request.getLocation());
+        project.setRequiredEmployees(request.getRequiredEmployees());
         project.setLinks(request.getLinks());
+        project.setSelectedSkills(request.getSelectedSkills());
+        project.setSelectedLocations(request.getSelectedLocations());
         project.setStatus(request.getStatus());
         project.setIsPublished(request.getIsPublished());
         project.setUpdatedBy(currentUserId);
 
-        // Update staffing requirements
-        if (request.getStaffingRequirements() != null) {
-            List<Project.StaffingRequirement> staffingReqs = request.getStaffingRequirements().stream()
-                    .map(dto -> new Project.StaffingRequirement(
-                            dto.getRole(),
+        // Update role requirements
+        if (request.getRoles() != null) {
+            List<Project.RoleRequirement> roleReqs = request.getRoles().stream()
+                    .map(dto -> new Project.RoleRequirement(
+                            dto.getRequiredRole(),
                             dto.getRequiredCompetencies(),
-                            dto.getCapacityHoursPerWeek(),
-                            dto.getExperienceLevel()
+                            dto.getCapacity(),
+                            dto.getNumberOfEmployees(),
+                            dto.getRoleInput(),
+                            dto.getCompetencyInput(),
+                            dto.getShowRoleDropdown(),
+                            dto.getShowCompetencyDropdown()
                     ))
                     .collect(Collectors.toList());
-            project.setStaffingRequirements(staffingReqs);
+            project.setRoles(roleReqs);
         }
 
         Project savedProject = projectRepository.save(project);
@@ -221,6 +230,44 @@ public class ProjectManagerService {
         log.info("Fetching projects created by: {}", creatorId);
 
         List<Project> projects = projectRepository.findByCreatedBy(creatorId);
+        return projects.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieve all projects assigned to a specific employee.
+     *
+     * Finds all projects where the employee is in the assignedEmployees list.
+     * Useful for "My Assigned Projects" views in employee dashboard.
+     *
+     * @param employeeId User ID of the employee
+     * @return List of ProjectResponseDto containing projects assigned to the employee
+     */
+    public List<ProjectResponseDto> getProjectsByEmployeeId(String employeeId) {
+        log.info("Fetching projects for employee ID: {}", employeeId);
+
+        List<Project> projects = projectRepository.findByAssignedEmployeesContaining(employeeId);
+
+        return projects.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieve all projects related to an employee (assigned, created, or updated).
+     *
+     * Finds all projects where the employee is involved in any capacity.
+     * Useful for comprehensive employee project views.
+     *
+     * @param employeeId User ID of the employee
+     * @return List of ProjectResponseDto containing all related projects
+     */
+    public List<ProjectResponseDto> getAllProjectsByEmployeeId(String employeeId) {
+        log.info("Fetching all projects related to employee ID: {}", employeeId);
+
+        List<Project> projects = projectRepository.findProjectsByEmployeeId(employeeId);
+
         return projects.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -305,22 +352,23 @@ public class ProjectManagerService {
      *
      * Internal helper method to convert a Project entity from the database
      * into a ProjectResponseDto for API responses. Includes mapping of
-     * nested staffing requirements.
+     * nested role requirements to match frontend structure.
      *
      * @param project Project entity to convert
      * @return ProjectResponseDto containing all project data for API response
      */
     private ProjectResponseDto mapToResponse(Project project) {
         ProjectResponseDto response = new ProjectResponseDto();
+        response.setProjectId(project.getProjectId());
         response.setId(project.getId());
-        response.setProjectName(project.getProjectName());
         response.setProjectDescription(project.getProjectDescription());
         response.setProjectStart(project.getProjectStart());
         response.setProjectEnd(project.getProjectEnd());
         response.setTaskDescription(project.getTaskDescription());
-        response.setNumberOfRequiredEmployees(project.getNumberOfRequiredEmployees());
-        response.setLocation(project.getLocation());
+        response.setRequiredEmployees(project.getRequiredEmployees());
         response.setLinks(project.getLinks());
+        response.setSelectedSkills(project.getSelectedSkills());
+        response.setSelectedLocations(project.getSelectedLocations());
         response.setStatus(project.getStatus());
         response.setIsPublished(project.getIsPublished());
         response.setCreatedBy(project.getCreatedBy());
@@ -328,17 +376,21 @@ public class ProjectManagerService {
         response.setUpdatedAt(project.getUpdatedAt());
         response.setUpdatedBy(project.getUpdatedBy());
 
-        // Map staffing requirements
-        if (project.getStaffingRequirements() != null) {
-            List<StaffingRequirementDto> staffingDtos = project.getStaffingRequirements().stream()
-                    .map(req -> new StaffingRequirementDto(
-                            req.getRole(),
-                            req.getRequiredCompetencies(),
-                            req.getCapacityHoursPerWeek(),
-                            req.getExperienceLevel()
+        // Map role requirements to DTOs
+        if (project.getRoles() != null) {
+            List<RoleRequirementDto> roleDtos = project.getRoles().stream()
+                    .map(role -> new RoleRequirementDto(
+                            role.getRequiredRole(),
+                            role.getRequiredCompetencies(),
+                            role.getCapacity(),
+                            role.getNumberOfEmployees(),
+                            role.getRoleInput(),
+                            role.getCompetencyInput(),
+                            role.getShowRoleDropdown(),
+                            role.getShowCompetencyDropdown()
                     ))
                     .collect(Collectors.toList());
-            response.setStaffingRequirements(staffingDtos);
+            response.setRoles(roleDtos);
         }
 
         return response;

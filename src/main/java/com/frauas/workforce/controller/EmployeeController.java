@@ -88,7 +88,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "Employee not found"),
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
-    @PutMapping("/{id}")
+    @PutMapping("/{employeeId}")
     @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER', 'RESOURCE_PLANNER')")
     public ResponseEntity<Employee> updateEmployee(
             @Parameter(description = "ID of the employee to update")
