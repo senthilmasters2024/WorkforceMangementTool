@@ -62,5 +62,3 @@ jobs:
           app-name: 'agilebe'
           slot-name: 'Production'
           package: '*.war'
-		  
-
