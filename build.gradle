@@ -5,6 +5,9 @@ plugins {
 	id 'war'
 }
 
+war {
+    archiveFileName = 'app.war'
+}
 group = 'com.workforcemanagement'
 version = '0.0.1-SNAPSHOT'
 description = 'Demo project for Spring Boot'
