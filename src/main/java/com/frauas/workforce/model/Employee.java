@@ -18,7 +18,7 @@ public class Employee {
     private String id;
 
     @Field("employeeId")
-    private int employeeId;
+    private Integer employeeId;
 
     private String userId;
 

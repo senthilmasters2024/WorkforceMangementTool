@@ -24,6 +24,7 @@ public class EmployeeService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @PostConstruct
     public void init() {
         // Add sample data with different roles if database is empty
@@ -113,6 +114,13 @@ public class EmployeeService {
         if (employee.getPassword() != null && !employee.getPassword().isEmpty()) {
             employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         }
+
+
+        // Generate sequential employee ID if not provided
+        if (employee.getEmployeeId() == null || employee.getEmployeeId() == 0) {
+            employee.setEmployeeId(generateNextEmployeeId());
+        }
+
         return employeeRepository.save(employee);
     }
 
@@ -136,6 +144,12 @@ public class EmployeeService {
 
             return employeeRepository.save(employee);
         });
+    }
+
+
+    public Integer generateNextEmployeeId() {
+        Optional<Employee> lastEmployee = employeeRepository.findTopByOrderByEmployeeIdDesc();
+        return lastEmployee.map(emp -> emp.getEmployeeId() + 1).orElse(1);
     }
 
     public boolean deleteEmployee(String id) {
