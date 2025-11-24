@@ -98,4 +98,19 @@ public interface ProjectManagerRepository extends MongoRepository<Project, Strin
     @Query("{ $or: [ { 'assignedEmployees': ?0 }, { 'createdBy': ?0 }, { 'updatedBy': ?0 } ] }")
     List<Project> findProjectsByEmployeeId(String employeeId);
 
+    /**
+     * Find a project by its business projectId field.
+     *
+     * @param projectId The business project ID (e.g., "PRJ-OZN439")
+     * @return Optional containing the project if found
+     */
+    Optional<Project> findByProjectId(String projectId);
+
+    /**
+     * Check if a project exists by its business projectId field.
+     *
+     * @param projectId The business project ID
+     * @return true if project exists, false otherwise
+     */
+    boolean existsByProjectId(String projectId);
 }

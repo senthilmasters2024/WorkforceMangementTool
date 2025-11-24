@@ -122,7 +122,7 @@ public class ProjectManagerService {
     public ProjectResponseDto updateProject(String projectId, UpdateProjectRequestDto request, String currentUserId) {
         log.info("Updating project with ID: {}", projectId);
 
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findByProjectId(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
         // Validate dates
@@ -176,7 +176,7 @@ public class ProjectManagerService {
     public ProjectResponseDto getProjectById(String projectId) {
         log.info("Fetching project with ID: {}", projectId);
 
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findByProjectId(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
         return mapToResponse(project);
@@ -287,7 +287,7 @@ public class ProjectManagerService {
     public ProjectResponseDto publishProject(String projectId, String currentUserId) {
         log.info("Publishing project with ID: {}", projectId);
 
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findByProjectId(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
         project.setIsPublished(true);
@@ -315,7 +315,7 @@ public class ProjectManagerService {
     public ProjectResponseDto updateProjectStatus(String projectId, ProjectStatus status, String currentUserId) {
         log.info("Updating project status to {} for ID: {}", status, projectId);
 
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findByProjectId(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
         project.setStatus(status);
@@ -339,11 +339,10 @@ public class ProjectManagerService {
     public void deleteProject(String projectId) {
         log.info("Deleting project with ID: {}", projectId);
 
-        if (!projectRepository.existsById(projectId)) {
-            throw new ResourceNotFoundException("Project not found with id: " + projectId);
-        }
+        Project project = projectRepository.findByProjectId(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
-        projectRepository.deleteById(projectId);
+        projectRepository.delete(project);
         log.info("Project deleted successfully with ID: {}", projectId);
     }
 
