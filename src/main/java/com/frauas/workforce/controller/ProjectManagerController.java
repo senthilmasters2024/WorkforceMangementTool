@@ -253,18 +253,15 @@ public class ProjectManagerController {
      * and visible to employees for assignment or viewing.
      *
      * @param projectId Path variable - unique identifier of the project to publish
-     * @param authentication Spring Security authentication object containing current user info
      * @return ResponseEntity with HTTP 200 (OK) and published project details on success
      *         HTTP 404 (NOT_FOUND) if project doesn't exist
      *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
      */
     @PatchMapping("/{projectId}/publish")
     public ResponseEntity<ApiResponse<ProjectResponseDto>> publishProject(
-            @PathVariable String projectId,
-            Authentication authentication) {
+            @PathVariable String projectId) {
         try {
-            String currentUserId = authentication.getName();
-            ProjectResponseDto response = projectService.publishProject(projectId, currentUserId);
+            ProjectResponseDto response = projectService.publishProject(projectId);
             return ResponseEntity.ok(ApiResponse.success(response, "Project published successfully"));
         } catch (Exception e) {
             log.error("Error publishing project: ", e);

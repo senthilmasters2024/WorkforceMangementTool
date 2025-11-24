@@ -280,18 +280,17 @@ public class ProjectManagerService {
      * discoverable and accessible to employees for assignment or viewing.
      *
      * @param projectId Unique identifier of the project to publish
-     * @param currentUserId ID of the authenticated user performing the publish action
      * @return ProjectResponseDto containing the published project details
      * @throws ResourceNotFoundException if no project exists with the given projectId
      */
-    public ProjectResponseDto publishProject(String projectId, String currentUserId) {
+    public ProjectResponseDto publishProject(String projectId) {
         log.info("Publishing project with ID: {}", projectId);
 
         Project project = projectRepository.findByProjectId(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
         project.setIsPublished(true);
-        project.setUpdatedBy(currentUserId);
+//        project.setUpdatedBy(currentUserId);
 
         Project savedProject = projectRepository.save(project);
         log.info("Project published successfully with ID: {}", savedProject.getId());
