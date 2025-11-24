@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,4 +56,7 @@ public class UpdateProjectRequestDto {
     private ProjectStatus status;
 
     private Boolean isPublished;
+
+    @Field("createdBy")
+    private String createdBy;
 }

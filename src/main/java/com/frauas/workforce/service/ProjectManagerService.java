@@ -115,12 +115,11 @@ public class ProjectManagerService {
      *
      * @param projectId Unique identifier of the project to update
      * @param request UpdateProjectRequestDto containing updated project details
-     * @param currentUserId ID of the authenticated user making the update
      * @return ProjectResponseDto containing the updated project information
      * @throws ResourceNotFoundException if no project exists with the given projectId
      * @throws IllegalArgumentException if project end date is before start date
      */
-    public ProjectResponseDto updateProject(String projectId, UpdateProjectRequestDto request, String currentUserId) {
+    public ProjectResponseDto updateProject(String projectId, UpdateProjectRequestDto request) {
         log.info("Updating project with ID: {}", projectId);
 
         Project project = projectRepository.findByProjectId(projectId)
@@ -142,7 +141,7 @@ public class ProjectManagerService {
         project.setSelectedLocations(request.getSelectedLocations());
         project.setStatus(request.getStatus());
         project.setIsPublished(request.getIsPublished());
-        project.setUpdatedBy(currentUserId);
+        project.setUpdatedBy(request.getCreatedBy());
 
         // Update role requirements
         if (request.getRoles() != null) {

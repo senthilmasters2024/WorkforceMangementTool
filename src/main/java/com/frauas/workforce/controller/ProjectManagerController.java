@@ -62,7 +62,6 @@ public class ProjectManagerController {
      * and date constraints before saving.
      *
      * @param request CreateProjectRequestDto containing project details (validated)
-     * @param authentication Spring Security authentication object containing current user info
      * @return ResponseEntity with HTTP 201 (CREATED) and created project details on success
      *         HTTP 400 (BAD_REQUEST) for validation errors
      *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
@@ -97,7 +96,6 @@ public class ProjectManagerController {
      *
      * @param projectId Path variable - unique identifier of the project to update
      * @param request UpdateProjectRequestDto containing updated project details (validated)
-     * @param authentication Spring Security authentication object containing current user info
      * @return ResponseEntity with HTTP 200 (OK) and updated project details on success
      *         HTTP 400 (BAD_REQUEST) for validation errors
      *         HTTP 404 (NOT_FOUND) if project doesn't exist
@@ -106,12 +104,11 @@ public class ProjectManagerController {
     @PutMapping("/{projectId}")
     public ResponseEntity<ApiResponse<ProjectResponseDto>> updateProject(
             @PathVariable String projectId,
-            @Valid @RequestBody UpdateProjectRequestDto request,
-            Authentication authentication) {
+            @Valid @RequestBody UpdateProjectRequestDto request) {
 
         try {
-            String currentUserId = authentication.getName(); // Get current user from authentication
-            ProjectResponseDto response = projectService.updateProject(projectId, request, currentUserId);
+
+            ProjectResponseDto response = projectService.updateProject(projectId, request);
             return ResponseEntity.ok(ApiResponse.success(response, "Project updated successfully"));
         } catch (Exception e) {
             log.error("Error updating project: ", e);
