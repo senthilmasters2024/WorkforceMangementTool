@@ -35,7 +35,7 @@ public class EmployeeController {
                     content = @Content(schema = @Schema(implementation = Employee.class)))
     })
     @GetMapping
-    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'PROJECT_MANAGER', 'DEPARTMENT_HEAD', 'RESOURCE_PLANNER', 'EMPLOYEE')")
+//    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'PROJECT_MANAGER', 'DEPARTMENT_HEAD', 'RESOURCE_PLANNER', 'EMPLOYEE')")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         return ResponseEntity.ok(employeeService.getAllEmployees());
     }
@@ -50,7 +50,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "Employee not found")
     })
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'PROJECT_MANAGER', 'DEPARTMENT_HEAD', 'RESOURCE_PLANNER', 'EMPLOYEE')")
+//    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'PROJECT_MANAGER', 'DEPARTMENT_HEAD', 'RESOURCE_PLANNER', 'EMPLOYEE')")
     public ResponseEntity<Employee> getEmployeeById(
             @Parameter(description = "ID of the employee to retrieve")
             @PathVariable String id) {
@@ -70,7 +70,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PostMapping
-    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER')")
+//    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER')")
     public ResponseEntity<Employee> createEmployee(
             @Parameter(description = "Employee object to create")
             @RequestBody Employee employee) {
@@ -89,7 +89,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PutMapping("/{employeeId}")
-    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER', 'RESOURCE_PLANNER')")
+//    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER', 'RESOURCE_PLANNER')")
     public ResponseEntity<Employee> updateEmployee(
             @Parameter(description = "ID of the employee to update")
             @PathVariable String id,
@@ -110,7 +110,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+//    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     public ResponseEntity<Void> deleteEmployee(
             @Parameter(description = "ID of the employee to delete")
             @PathVariable String id) {

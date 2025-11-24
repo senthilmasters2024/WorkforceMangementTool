@@ -2,10 +2,13 @@ package com.frauas.workforce.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,9 +26,10 @@ import java.util.List;
  * @version 1.0
  * @since 2025-11-16
  */
+@Document(collection = "projects")
 @Data
 @AllArgsConstructor
-@Document(collection = "projects")
+@EqualsAndHashCode
 public class Project {
 
     /**
@@ -35,33 +39,42 @@ public class Project {
     @Id
     private String id;
 
-    private String projectId;
+    @Field("projectId")
+    private String projectId;//make combination of integer and alpha
 
+    @Field("projectDescription")
     private String projectDescription;
 
+    @Field("projectStart")
     private LocalDate projectStart;
 
+    @Field("projectEnd")
     private LocalDate projectEnd;
 
+    @Field("taskDescription")
     private String taskDescription;
 
-    // Changed from Integer to String
+    @Field("requiredEmployees")
     private Integer requiredEmployees;
 
-    // Changed from List<String> to String
+    @Field("links")
     private String links;
 
-    // NEW fields
+    @Field("selectedSkills")
     private List<String> selectedSkills;
+
+    @Field("selectedLocations")
     private List<String> selectedLocations;
 
-    // Updated field - now stores RoleRequirement objects
+    @Field("roles")
     private List<RoleRequirement> roles;
 
+    @Field("status")
     private ProjectStatus status;
 
     private Boolean isPublished = false;
 
+    @Field("createdBy")
     private String createdBy;
 
     @CreatedDate
@@ -70,6 +83,7 @@ public class Project {
     @LastModifiedDate
     private LocalDate updatedAt;
 
+    @Field("updatedBy")
     private String updatedBy;
 
     public Project() {

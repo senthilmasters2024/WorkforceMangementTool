@@ -29,39 +29,63 @@ public class SecurityConfig {
     @Autowired
     private SessionAuthenticationFilter sessionAuthenticationFilter;
 
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(csrf -> csrf.disable())  // Disable CSRF for simplicity
+//                .authorizeHttpRequests(auth -> auth
+//                        // Public endpoints
+//                        .requestMatchers("/api/auth/**").permitAll()
+//                        .requestMatchers("/h2-console/**").permitAll()
+//                        .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+//                        .requestMatchers("/actuator/**").permitAll()
+//
+//                        // Employee endpoints - role-based access
+//                        .requestMatchers("/api/employees/**").authenticated()
+//
+//                        // All other requests require authentication
+//                        .anyRequest().authenticated()
+//                )
+//                .headers(headers -> headers
+//                        .frameOptions(frameOptions -> frameOptions.disable()) // For H2 console
+//                )
+//                .sessionManagement(session -> session
+//                        .maximumSessions(1)
+//                        .maxSessionsPreventsLogin(false)
+//                )
+//                .addFilterBefore(sessionAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//
+//        return http.build();
+//    }
+//
+//    @Bean
+//    public HttpSessionEventPublisher httpSessionEventPublisher() {
+//        return new HttpSessionEventPublisher();
+//    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
-                .csrf(csrf -> csrf.disable())  // Disable CSRF for simplicity
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
-
-                        // Employee endpoints - role-based access
-                        .requestMatchers("/api/employees/**").authenticated()
-
-                        // All other requests require authentication
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()   // allow everything
                 )
                 .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.disable()) // For H2 console
+                        .frameOptions(frameOptions -> frameOptions.disable())
                 )
-                .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(false)
-                )
-                .addFilterBefore(sessionAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.disable())
+                .securityContext(context -> context.disable())
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable());
 
         return http.build();
     }
 
-    @Bean
-    public HttpSessionEventPublisher httpSessionEventPublisher() {
-        return new HttpSessionEventPublisher();
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

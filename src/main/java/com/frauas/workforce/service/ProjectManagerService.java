@@ -53,13 +53,10 @@ public class ProjectManagerService {
      * saves to the database, and returns the created project as a response DTO.
      *
      * @param request CreateProjectRequestDto containing all project details
-     * @param currentUserId ID of the authenticated user creating the project
      * @return ProjectResponseDto containing the created project with generated ID and timestamps
      * @throws IllegalArgumentException if project end date is before start date
      */
-    public ProjectResponseDto createProject(CreateProjectRequestDto request, String currentUserId) {
-        log.info("Creating new project by user: {}", currentUserId);
-
+    public ProjectResponseDto createProject(CreateProjectRequestDto request) {
         // Validate dates
         if (request.getProjectEnd().isBefore(request.getProjectStart())) {
             throw new IllegalArgumentException("Project end date must be after start date");
@@ -78,7 +75,7 @@ public class ProjectManagerService {
         project.setSelectedLocations(request.getSelectedLocations());
         project.setStatus(request.getStatus());
         project.setIsPublished(request.getIsPublished() != null ? request.getIsPublished() : false);
-        project.setCreatedBy(currentUserId);
+        project.setCreatedBy(request.getCreatedBy());
 
         // Map role requirements
         if (request.getRoles() != null) {

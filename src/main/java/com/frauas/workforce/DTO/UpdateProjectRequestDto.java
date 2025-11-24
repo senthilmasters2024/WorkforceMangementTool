@@ -28,6 +28,8 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateProjectRequestDto {
 
+    private String projectId;
+
     @NotBlank(message = "Project description is required")
     private String projectDescription;
 

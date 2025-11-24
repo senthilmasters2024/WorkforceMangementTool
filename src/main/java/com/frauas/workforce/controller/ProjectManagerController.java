@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ProjectManagerController
@@ -68,12 +69,11 @@ public class ProjectManagerController {
      */
     @PostMapping
     public ResponseEntity<ApiResponse<ProjectResponseDto>> createProject(
-            @Valid @RequestBody CreateProjectRequestDto request,
-            Authentication authentication) {
+            @Valid @RequestBody CreateProjectRequestDto request) {
 
         try {
-            String currentUserId = authentication.getName(); // Get current user from authentication
-            ProjectResponseDto response = projectService.createProject(request, currentUserId);
+//            String currentUserId = authentication.getName(); // Get current user from authentication
+            ProjectResponseDto response = projectService.createProject(request);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(ApiResponse.success(response, "Project created successfully"));
         } catch (IllegalArgumentException e) {
@@ -143,6 +143,35 @@ public class ProjectManagerController {
                     .body(ApiResponse.error("Project not found", e.getMessage()));
         }
     }
+
+    @GetMapping("/by-creator/{createdBy}")
+    public ResponseEntity<ApiResponse<List<ProjectResponseDto>>> getProjectsByUserId(@PathVariable String createdBy) {
+        try {
+            List<ProjectResponseDto> projects = projectService.getProjectsByCreator(createdBy);
+            return ResponseEntity.ok(ApiResponse.success(projects, "Projects fetched successfully for user: " + createdBy));
+        } catch (Exception e) {
+            log.error("Error fetching projects by userId: {}", createdBy, e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("Projects not found for user", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/published/{isPublished}")
+    public ResponseEntity<ApiResponse<List<ProjectResponseDto>>> getProjectsByPublishedStatus(@PathVariable Boolean isPublished) {
+        try {
+            List<ProjectResponseDto> projects = projectService.getAllProjects()
+                    .stream()
+                    .filter(p -> p.getIsPublished().equals(isPublished))
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(ApiResponse.success(projects, "Projects fetched successfully for isPublished=" + isPublished));
+        } catch (Exception e) {
+            log.error("Error fetching projects by isPublished: {}", isPublished, e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("Projects not found for isPublished=" + isPublished, e.getMessage()));
+        }
+    }
+
 
     /**
      * Retrieve all projects in the system.

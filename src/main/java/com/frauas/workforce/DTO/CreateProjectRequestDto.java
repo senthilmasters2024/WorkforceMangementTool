@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,6 +32,8 @@ public class CreateProjectRequestDto {
      * Project name - required field.
      * Must not be blank.
      */
+
+    private String projectId;
 
     @NotBlank(message = "Project name is required")
     private String projectName;
@@ -60,6 +63,9 @@ public class CreateProjectRequestDto {
 
     // UPDATED: Roles structure to match frontend
     private List<RoleRequirementDto> roles;
+
+    @Field("createdBy")
+    private String createdBy;
 
     @NotNull(message = "Project status is required")
     private ProjectStatus status;
