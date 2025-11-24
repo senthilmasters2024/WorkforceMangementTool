@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,6 +35,9 @@ import java.util.stream.Collectors;
 public class ProjectManagerService {
     private final ProjectManagerRepository projectRepository;
     private static final Logger log = LoggerFactory.getLogger(ProjectManagerService.class);
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String NUMBERS = "0123456789";
+    private static final SecureRandom random = new SecureRandom();
 
     /**
      * Constructor for ProjectManagerService.
@@ -64,7 +68,7 @@ public class ProjectManagerService {
 
         // Create new project entity
         Project project = new Project();
-        project.setProjectId(java.util.UUID.randomUUID().toString());
+        project.setProjectId(generateRandomProjectId());
         project.setProjectDescription(request.getProjectDescription());
         project.setProjectStart(request.getProjectStart());
         project.setProjectEnd(request.getProjectEnd());
@@ -390,5 +394,25 @@ public class ProjectManagerService {
         }
 
         return response;
+    }
+
+    private String generateRandomProjectId() {
+        int lettersCount = 3; // Number of letters
+        int numbersCount = 3; // Number of digits
+        StringBuilder sb = new StringBuilder("PRJ-");
+
+        for (int i = 0; i < lettersCount; i++) {
+            sb.append(ALPHABET.charAt(random.nextInt(ALPHABET.length())));
+        }
+        for (int i = 0; i < numbersCount; i++) {
+            sb.append(NUMBERS.charAt(random.nextInt(NUMBERS.length())));
+        }
+
+        return sb.toString();
+    }
+
+    public List<ProjectResponseDto> getProjectsByPublished(Boolean isPublished) {
+        List<Project> projects = projectRepository.findByIsPublished(isPublished);
+        return projects.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 }
