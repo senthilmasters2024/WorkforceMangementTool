@@ -140,6 +140,7 @@ public class EmployeeService {
             employee.setEmployeeId(employeeDetails.getEmployeeId());
             employee.setRemoteWorking(employeeDetails.getRemoteWorking());
             employee.setUserId(employeeDetails.getUserId());
+            employee.setMessage(employeeDetails.getMessage());
 
             // Only update password if provided
             if (employeeDetails.getPassword() != null && !employeeDetails.getPassword().isEmpty()) {
@@ -162,6 +163,7 @@ public class EmployeeService {
             employee.setEmployeeId(employeeDetails.getEmployeeId());
             employee.setRemoteWorking(employeeDetails.getRemoteWorking());
             employee.setUserId(employeeDetails.getUserId());
+            employee.setMessage(employeeDetails.getMessage());
 
             // Only update password if provided
             if (employeeDetails.getPassword() != null && !employeeDetails.getPassword().isEmpty()) {
