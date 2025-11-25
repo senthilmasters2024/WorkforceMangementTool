@@ -41,20 +41,20 @@ public class EmployeeController {
     }
 
     @Operation(
-            summary = "Get employee by ID",
-            description = "Retrieves a specific employee by their ID. Accessible to all authenticated users."
+            summary = "Get employee by Employee ID",
+            description = "Retrieves a specific employee by their employee ID. Accessible to all authenticated users."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved employee",
                     content = @Content(schema = @Schema(implementation = Employee.class))),
             @ApiResponse(responseCode = "404", description = "Employee not found")
     })
-    @GetMapping("/{id}")
+    @GetMapping("/{employeeId}")
 //    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'PROJECT_MANAGER', 'DEPARTMENT_HEAD', 'RESOURCE_PLANNER', 'EMPLOYEE')")
     public ResponseEntity<Employee> getEmployeeById(
-            @Parameter(description = "ID of the employee to retrieve")
-            @PathVariable String id) {
-        return employeeService.getEmployeeById(id)
+            @Parameter(description = "Employee ID of the employee to retrieve")
+            @PathVariable Integer employeeId) {
+        return employeeService.getEmployeeByEmployeeId(employeeId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -91,11 +91,11 @@ public class EmployeeController {
     @PutMapping("/{employeeId}")
 //    @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'DEPARTMENT_HEAD', 'PROJECT_MANAGER', 'RESOURCE_PLANNER')")
     public ResponseEntity<Employee> updateEmployee(
-            @Parameter(description = "ID of the employee to update")
-            @PathVariable String id,
+            @Parameter(description = "Employee ID of the employee to update")
+            @PathVariable Integer employeeId,
             @Parameter(description = "Updated employee object")
             @RequestBody Employee employee) {
-        return employeeService.updateEmployee(id, employee)
+        return employeeService.updateEmployeeByEmployeeId(employeeId, employee)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

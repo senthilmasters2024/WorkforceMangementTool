@@ -104,6 +104,10 @@ public class EmployeeService {
         return employeeRepository.findById(id);
     }
 
+    public Optional<Employee> getEmployeeByEmployeeId(Integer employeeId) {
+        return employeeRepository.findByEmployeeId(employeeId);
+    }
+
     public Employee createEmployee(Employee employee) {
         // Generate userId if not provided
         if (employee.getUserId() == null || employee.getUserId().isEmpty()) {
@@ -126,6 +130,28 @@ public class EmployeeService {
 
     public Optional<Employee> updateEmployee(String id, Employee employeeDetails) {
         return employeeRepository.findById(id).map(employee -> {
+            employee.setUsername(employeeDetails.getUsername());
+            employee.setFirstName(employeeDetails.getFirstName());
+            employee.setLastName(employeeDetails.getLastName());
+            employee.setEmail(employeeDetails.getEmail());
+            employee.setDepartment(employeeDetails.getDepartment());
+            employee.setPosition(employeeDetails.getPosition());
+            employee.setRole(employeeDetails.getRole());
+            employee.setEmployeeId(employeeDetails.getEmployeeId());
+            employee.setRemoteWorking(employeeDetails.getRemoteWorking());
+            employee.setUserId(employeeDetails.getUserId());
+
+            // Only update password if provided
+            if (employeeDetails.getPassword() != null && !employeeDetails.getPassword().isEmpty()) {
+                employee.setPassword(passwordEncoder.encode(employeeDetails.getPassword()));
+            }
+
+            return employeeRepository.save(employee);
+        });
+    }
+
+    public Optional<Employee> updateEmployeeByEmployeeId(Integer employeeId, Employee employeeDetails) {
+        return employeeRepository.findByEmployeeId(employeeId).map(employee -> {
             employee.setUsername(employeeDetails.getUsername());
             employee.setFirstName(employeeDetails.getFirstName());
             employee.setLastName(employeeDetails.getLastName());
