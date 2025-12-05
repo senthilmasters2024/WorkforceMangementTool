@@ -36,7 +36,7 @@ public class EmployeeService {
         if (employeeRepository.count() == 0) {
             // System Admins (password: admin123)
             Employee admin = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "admin", passwordEncoder.encode("admin123"),
+                    "admin", "admin123",
                     "System", "Admin", "admin@workforce.com", "IT", "System Administrator", Role.SYSTEM_ADMIN, "msg",
                     Arrays.asList("System Administration", "Network Management", "Security"),
                     Arrays.asList("Cybersecurity", "Cloud Computing", "Automation"),
@@ -54,7 +54,7 @@ public class EmployeeService {
 
             // Project Managers (password: pm123)
             Employee projectManager1 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "pm_john", passwordEncoder.encode("pm123"),
+                    "pm_john", "pm123",
                     "John", "Doe", "john.doe@workforce.com", "IT", "Project Manager", Role.PROJECT_MANAGER, "msg",
                     Arrays.asList("Project Management", "Agile", "Scrum", "Leadership"),
                     Arrays.asList("Team Building", "Innovation", "Technology Trends"),
@@ -71,7 +71,7 @@ public class EmployeeService {
             createEmployee(projectManager1);
 
             Employee projectManager2 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "pm_sarah", passwordEncoder.encode("pm123"),
+                    "pm_sarah", "pm123",
                     "Sarah", "Connor", "sarah.connor@workforce.com", "Engineering", "Project Manager", Role.PROJECT_MANAGER, "msg",
                     Arrays.asList("Project Management", "Risk Management", "Stakeholder Management"),
                     Arrays.asList("Process Improvement", "Mentoring", "Strategic Planning"),
@@ -89,7 +89,7 @@ public class EmployeeService {
 
             // Department Heads (password: dh123)
             Employee deptHead1 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "dh_jane", passwordEncoder.encode("dh123"),
+                    "dh_jane", "dh123",
                     "Jane", "Smith", "jane.smith@workforce.com", "HR", "Department Head", Role.DEPARTMENT_HEAD, "msg",
                     Arrays.asList("HR Management", "Recruitment", "Employee Relations", "Performance Management"),
                     Arrays.asList("Organizational Development", "Coaching", "Diversity & Inclusion"),
@@ -106,7 +106,7 @@ public class EmployeeService {
             createEmployee(deptHead1);
 
             Employee deptHead2 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "dh_michael", passwordEncoder.encode("dh123"),
+                    "dh_michael", "dh123",
                     "Michael", "Brown", "michael.brown@workforce.com", "Finance", "Department Head", Role.DEPARTMENT_HEAD, "msg",
                     Arrays.asList("Financial Planning", "Budgeting", "Financial Analysis", "Strategic Planning"),
                     Arrays.asList("Investment Strategies", "Business Analytics", "Leadership"),
@@ -124,7 +124,7 @@ public class EmployeeService {
 
             // Resource Planners (password: rp123)
             Employee planner1 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "rp_bob", passwordEncoder.encode("rp123"),
+                    "rp_bob", "rp123",
                     "Bob", "Johnson", "bob.johnson@workforce.com", "Operations", "Resource Planner", Role.RESOURCE_PLANNER, "msg",
                     Arrays.asList("Resource Planning", "Capacity Management", "Scheduling", "Forecasting"),
                     Arrays.asList("Operations Optimization", "Data Visualization", "Problem Solving"),
@@ -141,7 +141,7 @@ public class EmployeeService {
             createEmployee(planner1);
 
             Employee planner2 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "rp_lisa", passwordEncoder.encode("rp123"),
+                    "rp_lisa", "rp123",
                     "Lisa", "Davis", "lisa.davis@workforce.com", "HR", "Resource Planner", Role.RESOURCE_PLANNER, "msg",
                     Arrays.asList("Workforce Planning", "Resource Allocation", "Data Analysis"),
                     Arrays.asList("HR Technology", "Predictive Analytics", "Continuous Improvement"),
@@ -159,7 +159,7 @@ public class EmployeeService {
 
             // Regular Employees (password: emp123)
             Employee employee1 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "emp_alice", passwordEncoder.encode("emp123"),
+                    "emp_alice", "emp123",
                     "Alice", "Williams", "alice.williams@workforce.com", "IT", "Software Engineer", Role.EMPLOYEE, "msg",
                     Arrays.asList("Java", "Spring Boot", "React", "Microservices"),
                     Arrays.asList("Open Source", "AI/ML", "Gaming", "Hiking"),
@@ -176,7 +176,7 @@ public class EmployeeService {
             createEmployee(employee1);
 
             Employee employee2 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "emp_tom", passwordEncoder.encode("emp123"),
+                    "emp_tom", "emp123",
                     "Tom", "Anderson", "tom.anderson@workforce.com", "IT", "Backend Developer", Role.EMPLOYEE, "msg",
                     Arrays.asList("Python", "Django", "REST API", "PostgreSQL"),
                     Arrays.asList("DevOps", "Cloud Architecture", "Photography", "Cycling"),
@@ -193,7 +193,7 @@ public class EmployeeService {
             createEmployee(employee2);
 
             Employee employee3 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "emp_emma", passwordEncoder.encode("emp123"),
+                    "emp_emma", "emp123",
                     "Emma", "Wilson", "emma.wilson@workforce.com", "Marketing", "Marketing Specialist", Role.EMPLOYEE, "msg",
                     Arrays.asList("Digital Marketing", "SEO", "Content Strategy", "Social Media"),
                     Arrays.asList("Content Creation", "Brand Strategy", "Travel", "Blogging"),
@@ -210,7 +210,7 @@ public class EmployeeService {
             createEmployee(employee3);
 
             Employee employee4 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
-                    "emp_david", passwordEncoder.encode("emp123"),
+                    "emp_david", "emp123",
                     "David", "Martinez", "david.martinez@workforce.com", "Finance", "Financial Analyst", Role.EMPLOYEE, "msg",
                     Arrays.asList("Financial Modeling", "Excel", "Data Analysis", "Forecasting"),
                     Arrays.asList("Economics", "Stock Market", "Chess", "Reading"),
@@ -226,7 +226,7 @@ public class EmployeeService {
                     ));
             createEmployee(employee4);
 
-            Employee employee5 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false, "emp_sophia", passwordEncoder.encode("emp123"),
+            Employee employee5 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false, "emp_sophia", "emp123",
                     "Sophia", "Garcia", "sophia.garcia@workforce.com", "HR", "HR Specialist", Role.EMPLOYEE, "msg",
                     Arrays.asList("Recruitment", "Onboarding", "Employee Engagement", "HR Analytics"),
                     Arrays.asList("Psychology", "Team Dynamics", "Yoga", "Volunteering"),

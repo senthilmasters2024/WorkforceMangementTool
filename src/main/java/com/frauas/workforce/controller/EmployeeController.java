@@ -28,6 +28,16 @@ public class EmployeeController {
     }
 
     @Operation(
+            summary = "TEMPORARY: Clear all employees and reload sample data",
+            description = "FOR DEVELOPMENT ONLY - Deletes all employees and triggers reload of sample data on next restart"
+    )
+    @DeleteMapping("/clear-all")
+    public ResponseEntity<String> clearAllEmployees() {
+        employeeService.getAllEmployees().forEach(emp -> employeeService.deleteEmployee(emp.getId()));
+        return ResponseEntity.ok("All employees cleared. Restart the application to reload sample data.");
+    }
+
+    @Operation(
             summary = "Get all employees",
             description = "Retrieves a list of all employees in the system. Accessible to all authenticated users."
     )
