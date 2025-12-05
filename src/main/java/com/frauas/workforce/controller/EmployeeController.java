@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,9 +55,15 @@ public class EmployeeController {
     public ResponseEntity<Employee> getEmployeeById(
             @Parameter(description = "Employee ID of the employee to retrieve")
             @PathVariable Integer employeeId) {
-        return employeeService.getEmployeeByEmployeeId(employeeId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            return employeeService.getEmployeeByEmployeeId(employeeId)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            Employee errorResponse = new Employee();
+            errorResponse.setMessage("Error: Duplicate employeeId found in database. Please contact system administrator.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @Operation(
@@ -74,8 +81,14 @@ public class EmployeeController {
     public ResponseEntity<Employee> createEmployee(
             @Parameter(description = "Employee object to create")
             @RequestBody Employee employee) {
-        Employee createdEmployee = employeeService.createEmployee(employee);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
+        try {
+            Employee createdEmployee = employeeService.createEmployee(employee);
+            createdEmployee.setMessage("Employee created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
+        } catch (Exception e) {
+            employee.setMessage("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(employee);
+        }
     }
 
     @Operation(
@@ -95,9 +108,20 @@ public class EmployeeController {
             @PathVariable Integer employeeId,
             @Parameter(description = "Updated employee object")
             @RequestBody Employee employee) {
-        return employeeService.updateEmployeeByEmployeeId(employeeId, employee)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            return employeeService.updateEmployeeByEmployeeId(employeeId, employee)
+                    .map(updatedEmployee -> {
+                        updatedEmployee.setMessage("Employee updated successfully");
+                        return ResponseEntity.ok(updatedEmployee);
+                    })
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            employee.setMessage("Error: Duplicate employeeId found in database. Please contact system administrator.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(employee);
+        } catch (Exception e) {
+            employee.setMessage("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(employee);
+        }
     }
 
     @Operation(
@@ -109,12 +133,12 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "Employee not found"),
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{employeeId}")
 //    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     public ResponseEntity<Void> deleteEmployee(
-            @Parameter(description = "ID of the employee to delete")
-            @PathVariable String id) {
-        if (employeeService.deleteEmployee(id)) {
+            @Parameter(description = "Employee ID of the employee to delete")
+            @PathVariable Integer employeeId) {
+        if (employeeService.deleteEmployeeByEmployeeId(employeeId)) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();

@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.List;
+
 @Document(collection = "employees")
 @Data
 @NoArgsConstructor
@@ -17,6 +19,7 @@ public class Employee {
     @Id
     private String id;
 
+    @Indexed(unique = true)
     @Field("employeeId")
     private Integer employeeId;
 
@@ -54,4 +57,31 @@ public class Employee {
 
     @Field("message")
     private String message;
+
+    @Field("skills")
+    private List<String> skills;
+
+    @Field("interests")
+    private List<String> interests;
+
+    @Field("baseLocation")
+    private String baseLocation;
+
+    @Field("preferredLocations")
+    private List<String> preferredLocations;
+
+    @Field("emergencyContact")
+    private String emergencyContact;
+
+    @Field("availabilityStatus")
+    private AvailabilityStatus availabilityStatus;
+
+    @Field("contractType")
+    private ContractType contractType;
+
+    @Field("capacity")
+    private Integer capacity;
+
+    @Field("workExperience")
+    private List<Experience> workExperience;
 }
