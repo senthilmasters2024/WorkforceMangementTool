@@ -19,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/employees")
 @Tag(name = "Employee", description = "Employee management APIs")
+@CrossOrigin(origins = "*")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
