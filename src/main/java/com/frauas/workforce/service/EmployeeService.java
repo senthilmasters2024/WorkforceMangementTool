@@ -6,6 +6,7 @@ import com.frauas.workforce.model.Employee;
 import com.frauas.workforce.model.Experience;
 import com.frauas.workforce.model.Role;
 import com.frauas.workforce.repository.EmployeeRepository;
+import com.frauas.workforce.repository.ProjectManagerRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,9 @@ public class EmployeeService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ProjectManagerRepository projectManagerRepository;
+
 
     @PostConstruct
     public void init() {
@@ -49,7 +53,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("Senior System Admin", "Tech Corp", LocalDate.of(2018, 1, 1), LocalDate.of(2023, 12, 31), "Managed enterprise IT infrastructure"),
                             new Experience("IT Administrator", "StartUp GmbH", LocalDate.of(2015, 6, 1), LocalDate.of(2017, 12, 31), "Handled network and security operations")
-                    ));
+                    ), null, null);
             createEmployee(admin);
 
             // Project Managers (password: pm123)
@@ -67,7 +71,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("Project Manager", "Digital Solutions AG", LocalDate.of(2020, 3, 1), null, "Leading multiple software development projects"),
                             new Experience("Scrum Master", "Innovation Labs", LocalDate.of(2017, 9, 1), LocalDate.of(2020, 2, 28), "Facilitated agile teams")
-                    ));
+                    ), null, null);
             createEmployee(projectManager1);
 
             Employee projectManager2 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
@@ -84,7 +88,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("Senior Project Manager", "Engineering Firm", LocalDate.of(2019, 1, 1), null, "Managing large-scale engineering projects"),
                             new Experience("Team Lead", "Tech Innovations", LocalDate.of(2016, 4, 1), LocalDate.of(2018, 12, 31), "Led cross-functional teams")
-                    ));
+                    ), null, null);
             createEmployee(projectManager2);
 
             // Department Heads (password: dh123)
@@ -102,7 +106,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("HR Department Head", "Global Enterprise", LocalDate.of(2021, 1, 1), null, "Leading HR strategy and operations"),
                             new Experience("HR Manager", "Corporate Solutions", LocalDate.of(2018, 3, 1), LocalDate.of(2020, 12, 31), "Managed recruitment and employee development")
-                    ));
+                    ), null, null);
             createEmployee(deptHead1);
 
             Employee deptHead2 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
@@ -119,7 +123,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("Finance Department Head", "Financial Services Inc", LocalDate.of(2020, 6, 1), null, "Overseeing financial planning and analysis"),
                             new Experience("Senior Financial Analyst", "Investment Bank", LocalDate.of(2016, 1, 1), LocalDate.of(2020, 5, 31), "Financial modeling and forecasting")
-                    ));
+                    ), null, null);
             createEmployee(deptHead2);
 
             // Resource Planners (password: rp123)
@@ -137,7 +141,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("Resource Planner", "Operations Hub", LocalDate.of(2019, 7, 1), null, "Managing resource allocation and capacity planning"),
                             new Experience("Operations Coordinator", "Logistics Pro", LocalDate.of(2017, 2, 1), LocalDate.of(2019, 6, 30), "Coordinated scheduling and resources")
-                    ));
+                    ), null, null);
             createEmployee(planner1);
 
             Employee planner2 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
@@ -154,7 +158,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("HR Resource Planner", "Tech Company", LocalDate.of(2020, 9, 1), null, "Workforce planning and analytics"),
                             new Experience("HR Analyst", "Consulting Firm", LocalDate.of(2018, 5, 1), LocalDate.of(2020, 8, 31), "Analyzed workforce trends and capacity")
-                    ));
+                    ), null, null);
             createEmployee(planner2);
 
             // Regular Employees (password: emp123)
@@ -172,7 +176,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("Software Engineer", "Tech Solutions GmbH", LocalDate.of(2021, 4, 1), null, "Developing microservices and web applications"),
                             new Experience("Junior Developer", "Code Factory", LocalDate.of(2019, 8, 1), LocalDate.of(2021, 3, 31), "Full-stack development with React and Java")
-                    ));
+                    ), null, null);
             createEmployee(employee1);
 
             Employee employee2 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
@@ -189,7 +193,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("Backend Developer", "Digital Platform AG", LocalDate.of(2020, 10, 1), null, "Building scalable backend systems with Python"),
                             new Experience("Python Developer", "Startup Inc", LocalDate.of(2018, 6, 1), LocalDate.of(2020, 9, 30), "API development and database design")
-                    ));
+                    ), null, null);
             createEmployee(employee2);
 
             Employee employee3 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
@@ -206,7 +210,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("Marketing Specialist", "Brand Agency", LocalDate.of(2022, 1, 1), null, "Digital marketing campaigns and SEO optimization"),
                             new Experience("Content Manager", "Media House", LocalDate.of(2020, 3, 1), LocalDate.of(2021, 12, 31), "Content strategy and social media management")
-                    ));
+                    ), null, null);
             createEmployee(employee3);
 
             Employee employee4 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false,
@@ -223,7 +227,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("Financial Analyst", "Finance Corp", LocalDate.of(2021, 11, 1), LocalDate.of(2024, 12, 31), "Financial modeling and forecasting for projects"),
                             new Experience("Junior Analyst", "Investment Firm", LocalDate.of(2020, 2, 1), LocalDate.of(2021, 10, 31), "Data analysis and reporting")
-                    ));
+                    ), null, null);
             createEmployee(employee4);
 
             Employee employee5 = new Employee(null, null, java.util.UUID.randomUUID().toString(), false, "emp_sophia", "emp123",
@@ -239,7 +243,7 @@ public class EmployeeService {
                     Arrays.asList(
                             new Experience("HR Specialist - Working Student", "Corporate HR", LocalDate.of(2023, 9, 1), null, "Supporting recruitment and onboarding processes"),
                             new Experience("HR Intern", "Business Services", LocalDate.of(2023, 3, 1), LocalDate.of(2023, 8, 31), "Assisted with employee engagement initiatives")
-                    ));
+                    ), null, null);
             createEmployee(employee5);
         }
     }
@@ -273,6 +277,10 @@ public class EmployeeService {
             employee.setEmployeeId(generateNextEmployeeId());
         }
 
+        // Validate supervisor and assigned project
+        validateSupervisor(employee.getEmployeeId(), employee.getSupervisor());
+        validateAssignedProject(employee.getAssignedProjectId());
+
         return employeeRepository.save(employee);
     }
 
@@ -298,11 +306,17 @@ public class EmployeeService {
             employee.setContractType(employeeDetails.getContractType());
             employee.setCapacity(employeeDetails.getCapacity());
             employee.setWorkExperience(employeeDetails.getWorkExperience());
+            employee.setSupervisor(employeeDetails.getSupervisor());
+            employee.setAssignedProjectId(employeeDetails.getAssignedProjectId());
 
             // Only update password if provided
             if (employeeDetails.getPassword() != null && !employeeDetails.getPassword().isEmpty()) {
                 employee.setPassword(passwordEncoder.encode(employeeDetails.getPassword()));
             }
+
+            // Validate supervisor and assigned project
+            validateSupervisor(employee.getEmployeeId(), employee.getSupervisor());
+            validateAssignedProject(employee.getAssignedProjectId());
 
             return employeeRepository.save(employee);
         });
@@ -330,11 +344,17 @@ public class EmployeeService {
             employee.setContractType(employeeDetails.getContractType());
             employee.setCapacity(employeeDetails.getCapacity());
             employee.setWorkExperience(employeeDetails.getWorkExperience());
+            employee.setSupervisor(employeeDetails.getSupervisor());
+            employee.setAssignedProjectId(employeeDetails.getAssignedProjectId());
 
             // Only update password if provided
             if (employeeDetails.getPassword() != null && !employeeDetails.getPassword().isEmpty()) {
                 employee.setPassword(passwordEncoder.encode(employeeDetails.getPassword()));
             }
+
+            // Validate supervisor and assigned project
+            validateSupervisor(employee.getEmployeeId(), employee.getSupervisor());
+            validateAssignedProject(employee.getAssignedProjectId());
 
             return employeeRepository.save(employee);
         });
@@ -344,6 +364,37 @@ public class EmployeeService {
     public Integer generateNextEmployeeId() {
         Optional<Employee> lastEmployee = employeeRepository.findTopByOrderByEmployeeIdDesc();
         return lastEmployee.map(emp -> emp.getEmployeeId() + 1).orElse(1);
+    }
+
+    /**
+     * Validates that a supervisor employee ID exists and is not self-referencing.
+     */
+    private void validateSupervisor(Integer employeeId, Integer supervisorId) {
+        if (supervisorId == null) {
+            return; // Null supervisor is allowed
+        }
+
+        if (supervisorId.equals(employeeId)) {
+            throw new IllegalArgumentException("Employee cannot be their own supervisor");
+        }
+
+        Optional<Employee> supervisor = employeeRepository.findByEmployeeId(supervisorId);
+        if (!supervisor.isPresent()) {
+            throw new IllegalArgumentException("Supervisor with employeeId " + supervisorId + " does not exist");
+        }
+    }
+
+    /**
+     * Validates that an assigned project ID exists in the database.
+     */
+    private void validateAssignedProject(String projectId) {
+        if (projectId == null || projectId.isEmpty()) {
+            return; // Null/empty project assignment is allowed
+        }
+
+        if (!projectManagerRepository.existsByProjectId(projectId)) {
+            throw new IllegalArgumentException("Project with projectId '" + projectId + "' does not exist");
+        }
     }
 
     public boolean deleteEmployee(String id) {
