@@ -31,7 +31,6 @@ public class ApplicationService {
         application.setApplicationId(generateApplicationId());
         application.setProjectId(request.getProjectId());
         application.setEmployeeId(request.getEmployeeId());
-        application.setRequestedCapacity(request.getRequestedCapacity());
         application.setCurrentStatus(ApplicationStatus.SUGGESTED);
 
         // suggestedBy
@@ -39,6 +38,7 @@ public class ApplicationService {
         suggestedBy.setUserId(request.getPlannerUserId());
         suggestedBy.setRole("RESOURCE_PLANNER");
         application.setSuggestedBy(suggestedBy);
+        application.setProjectRole(request.getProjectRole());
 
         // timestamps
         Timestamps timestamps = new Timestamps();
@@ -62,8 +62,6 @@ public class ApplicationService {
         dto.setProjectId(app.getProjectId());
         dto.setEmployeeId(app.getEmployeeId());
         dto.setCurrentStatus(app.getCurrentStatus());
-        dto.setRequestedCapacity(app.getRequestedCapacity());
-        dto.setApprovedCapacity(app.getApprovedCapacity());
         dto.setTimestamps(app.getTimestamps());
 
         dto.setInitiatedBy(mapUserAction(app.getInitiatedBy()));

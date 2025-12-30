@@ -18,14 +18,11 @@ public class Application {
     private String id;
 
     private String applicationId;
-
+    private String projectRole;
     private String projectId;
     private Integer employeeId;
 
     private ApplicationStatus currentStatus;
-
-    private Integer requestedCapacity;
-    private Integer approvedCapacity;
 
     private UserAction initiatedBy;
     private UserAction suggestedBy;

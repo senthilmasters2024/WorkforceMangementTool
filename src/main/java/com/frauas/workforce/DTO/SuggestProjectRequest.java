@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SuggestProjectRequest {
     private String projectId;
+    private String projectRole;
     private Integer employeeId;
-
-    private Integer requestedCapacity;
 
     private String plannerUserId; //
 }
