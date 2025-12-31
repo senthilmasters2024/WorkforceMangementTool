@@ -86,7 +86,10 @@ public class Employee {
     private List<Experience> workExperience;
 
     @Field("supervisor")
-    private Integer supervisor;  // References another employee's employeeId
+    private String supervisor;  // Employee name of the supervisor
+
+    @Field("supervisorId")
+    private Integer supervisorId;  // References another employee's employeeId
 
     @Field("assignedProjectId")
     private String assignedProjectId;  // References a project's projectId
