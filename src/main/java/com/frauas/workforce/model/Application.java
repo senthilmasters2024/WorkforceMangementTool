@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "applications")
@@ -17,7 +18,9 @@ public class Application {
     @Id
     private String id;
 
+    @Indexed(unique = true)
     private String applicationId;
+
     private String projectRole;
     private String projectId;
     private Integer employeeId;
@@ -28,6 +31,8 @@ public class Application {
     private UserAction suggestedBy;
     private UserAction approvedBy;
     private UserAction confirmedBy;
+
+    private UserAction appliedAt;
 
     private Timestamps timestamps;
 

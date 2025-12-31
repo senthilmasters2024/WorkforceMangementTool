@@ -16,5 +16,10 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
             ApplicationStatus currentStatus
     );
     Optional<Application> findByApplicationId(String applicationId);
+    Optional<Application> findByEmployeeIdAndProjectIdAndProjectRole(
+            Integer employeeId,
+            String projectId,
+            String projectRole
+    );
 
 }

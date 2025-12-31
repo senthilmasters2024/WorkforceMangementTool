@@ -13,6 +13,7 @@ public class ApplicationResponseDTO {
     private String id;
     private String projectId;
     private Integer employeeId;
+    private String projectRole;
     private ApplicationStatus currentStatus;
     private Integer requestedCapacity;
     private Integer approvedCapacity;

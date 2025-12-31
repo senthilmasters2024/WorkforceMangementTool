@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,8 +29,22 @@ public class ApplicationService {
 
     public ApplicationResponseDTO suggestProjectToEmployee(SuggestProjectRequest request) {
 
+        // Validate: Check if employee has already been suggested or applied for this project and role
+        Optional<Application> existingApplication = applicationRepository
+                .findByEmployeeIdAndProjectIdAndProjectRole(
+                        request.getEmployeeId(),
+                        request.getProjectId(),
+                        request.getProjectRole()
+                );
+
+        if (existingApplication.isPresent()) {
+            return null; // Will be handled in controller to return error response
+        }
+
         Application application = new Application();
-        application.setApplicationId(generateApplicationId());
+        // Generate unique application ID in format: App_{projectId}_{counter}
+        long counter = applicationRepository.count() + 1;
+        application.setApplicationId("App_" + request.getProjectId() + "_" + counter);
         application.setProjectId(request.getProjectId());
         application.setEmployeeId(request.getEmployeeId());
         application.setCurrentStatus(ApplicationStatus.SUGGESTED);
@@ -53,15 +68,12 @@ public class ApplicationService {
         return mapToResponseDTO(savedApp);
     }
 
-    private String generateApplicationId() {
-        return "PP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-    }
-
     private ApplicationResponseDTO mapToResponseDTO(Application app) {
         ApplicationResponseDTO dto = new ApplicationResponseDTO();
         dto.setId(app.getId());
         dto.setProjectId(app.getProjectId());
         dto.setEmployeeId(app.getEmployeeId());
+        dto.setProjectRole(app.getProjectRole());
         dto.setCurrentStatus(app.getCurrentStatus());
         dto.setTimestamps(app.getTimestamps());
 
@@ -130,4 +142,43 @@ public class ApplicationService {
         return applicationRepository.save(application);
     }
 
+    public Application applyToOpenProject(Integer employeeId, String projectId, String projectRole) {
+        // Validate: Check if employee has already applied for this project and role
+        Optional<Application> existingApplication = applicationRepository
+                .findByEmployeeIdAndProjectIdAndProjectRole(employeeId, projectId, projectRole);
+
+        if (existingApplication.isPresent()) {
+            return null; // Will be handled in controller to return error response
+        }
+
+        // Create a new application
+        Application application = new Application();
+
+        // Generate unique application ID in format: App_{projectId}_{counter}
+        long counter = applicationRepository.count() + 1;
+        application.setApplicationId("App_" + projectId + "_" + counter);
+
+        // Set basic fields
+        application.setEmployeeId(employeeId);
+        application.setProjectId(projectId);
+        application.setProjectRole(projectRole);
+
+        // Set status to APPLIED (employee is directly applying)
+        application.setCurrentStatus(ApplicationStatus.APPLIED);
+
+        // Set initiatedBy to employee
+        UserAction initiatedBy = new UserAction(
+                employeeId.toString(),
+                Role.EMPLOYEE
+        );
+        application.setInitiatedBy(initiatedBy);
+
+        // Set timestamps
+        Timestamps timestamps = new Timestamps();
+        timestamps.setAppliedAt(Date.from(Instant.now()));
+        application.setTimestamps(timestamps);
+
+        // Save to database
+        return applicationRepository.save(application);
+    }
 }
