@@ -1,6 +1,7 @@
 package com.frauas.workforce.controller;
 
 import com.frauas.workforce.DTO.ApplicationResponseDTO;
+import com.frauas.workforce.DTO.ApplyRequest;
 import com.frauas.workforce.DTO.SuggestProjectRequest;
 import com.frauas.workforce.model.Application;
 import com.frauas.workforce.service.ApplicationService;
@@ -40,11 +41,11 @@ public class ApplicationController {
         return applicationService.getSuggestedProjectsForEmployee(employeeId);
     }
 
-    @PostMapping("/apply/{applicationId}/{employeeId}")
-    public Application applyToSuggestedProject(
-            @PathVariable String applicationId,
-            @PathVariable Integer employeeId
-    ) {
-        return applicationService.applyToSuggestedProject(applicationId, employeeId);
+    @PostMapping("/apply/suggestedProjects")
+    public Application applyToSuggestedProject(@RequestBody ApplyRequest request) {
+        return applicationService.applyToSuggestedProject(
+                request.getApplicationId(),
+                request.getEmployeeId()
+        );
     }
 }
