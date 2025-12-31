@@ -12,4 +12,9 @@ import lombok.NoArgsConstructor;
 public class UserAction {
     private String userId;
     private String role;
+
+    public UserAction(String userId, Role role) {
+        this.userId = userId;
+        this.role = role.name(); // store enum as String
+    }
 }

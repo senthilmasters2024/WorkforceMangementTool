@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -87,4 +88,46 @@ public class ApplicationService {
         }
         return new ApplicationResponseDTO.UserActionDTO(action.getUserId(), username, action.getRole());
     }
+
+    public List<Application> getSuggestedProjectsForEmployee(Integer employeeId) {
+        return applicationRepository.findByEmployeeIdAndCurrentStatus(
+                employeeId,
+                ApplicationStatus.SUGGESTED
+        );
+    }
+
+    public Application applyToSuggestedProject(String applicationId, Integer employeeId) {
+
+        Application application = applicationRepository.findByApplicationId(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        // Ownership check
+        if (!application.getEmployeeId().equals(employeeId)) {
+            throw new RuntimeException("You are not allowed to apply for this application");
+        }
+
+        // Status validation
+        if (application.getCurrentStatus() != ApplicationStatus.SUGGESTED) {
+            throw new RuntimeException("Application is not in SUGGESTED state");
+        }
+
+        // Update status
+        application.setCurrentStatus(ApplicationStatus.APPLIED);
+
+        // Set initiatedBy correctly
+        UserAction initiatedBy = new UserAction(
+                employeeId.toString(),
+                Role.EMPLOYEE
+        );
+        application.setInitiatedBy(initiatedBy);
+
+        // Set timestamp
+        if (application.getTimestamps() == null) {
+            application.setTimestamps(new Timestamps());
+        }
+        application.getTimestamps().setAppliedAt(Date.from(Instant.now()));
+
+        return applicationRepository.save(application);
+    }
+
 }
