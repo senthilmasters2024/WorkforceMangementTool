@@ -30,9 +30,13 @@ public class Application {
     private UserAction initiatedBy;
     private UserAction suggestedBy;
     private UserAction approvedBy;
+    private UserAction rejectedBy;
     private UserAction confirmedBy;
 
     private UserAction appliedAt;
+
+    private String approvalComments;
+    private String rejectionReason;
 
     private Timestamps timestamps;
 
