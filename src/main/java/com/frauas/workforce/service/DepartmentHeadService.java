@@ -88,7 +88,34 @@ public class DepartmentHeadService {
         employee.setAssignedProjectId(application.getProjectId());
         employeeRepository.save(employee);
 
-        // 12. Save and return
+        // 12. Auto-reject all other pending applications by this employee
+        List<Application> allEmployeeApplications = applicationRepository.findByEmployeeId(application.getEmployeeId());
+
+        for (Application otherApp : allEmployeeApplications) {
+            // Skip the current application and already completed/rejected ones
+            if (!otherApp.getId().equals(application.getId())
+                && (otherApp.getCurrentStatus() == ApplicationStatus.APPLIED
+                    || otherApp.getCurrentStatus() == ApplicationStatus.REQUEST_DH_APPROVAL
+                    || otherApp.getCurrentStatus() == ApplicationStatus.SUGGESTED)) {
+
+                // Reject this application
+                otherApp.setCurrentStatus(ApplicationStatus.REJECTED_BY_DH);
+
+                // Set rejection reason
+                otherApp.setRejectionReason("Employee has been assigned to project: " + application.getProjectId());
+
+                // Set rejectedBy to the same DH who approved
+                UserAction autoRejectedBy = new UserAction();
+                autoRejectedBy.setUserId(departmentHeadId.toString());
+                autoRejectedBy.setRole(Role.DEPARTMENT_HEAD.name());
+                otherApp.setRejectedBy(autoRejectedBy);
+
+                // Save the rejected application
+                applicationRepository.save(otherApp);
+            }
+        }
+
+        // 13. Save and return the approved application
         return applicationRepository.save(application);
     }
 
