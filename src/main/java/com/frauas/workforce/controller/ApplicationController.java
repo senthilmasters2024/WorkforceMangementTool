@@ -1,9 +1,6 @@
 package com.frauas.workforce.controller;
 
-import com.frauas.workforce.DTO.ApplicationResponseDTO;
-import com.frauas.workforce.DTO.ApplyRequest;
-import com.frauas.workforce.DTO.ErrorResponse;
-import com.frauas.workforce.DTO.SuggestProjectRequest;
+import com.frauas.workforce.DTO.*;
 import com.frauas.workforce.model.Application;
 import com.frauas.workforce.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +41,7 @@ public class ApplicationController {
     }
 
     @GetMapping("/suggested-projects/{employeeId}")
-    public List<Application> getSuggestedProjects(
+    public List<SuggestedProjectResponseDTO> getSuggestedProjects(
             @PathVariable Integer employeeId
     ) {
         return applicationService.getSuggestedProjectsForEmployee(employeeId);

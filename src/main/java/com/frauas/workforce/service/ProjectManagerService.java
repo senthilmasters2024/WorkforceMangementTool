@@ -423,4 +423,57 @@ public class ProjectManagerService {
         List<Project> projects = projectRepository.findByIsPublished(isPublished);
         return projects.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
+
+    public Application requestDepartmentHeadApproval(
+            String applicationId,
+            String projectManagerId,
+            String comments
+    ) {
+        Application application = applicationRepository.findByApplicationId(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        if (application.getCurrentStatus() != ApplicationStatus.SUGGESTED) {
+            throw new RuntimeException("Only SUGGESTED applications can be sent for Department Head approval");
+        }
+
+        application.setCurrentStatus(ApplicationStatus.REQUEST_DH_APPROVAL);
+//        application.setApprovedBy(new UserAction(projectManagerId, Role.PROJECT_MANAGER));
+
+        application.getTimestamps().setApprovedAt(Date.from(Instant.now()));
+        application.getTimestamps().setPmComments(comments);
+
+        return applicationRepository.save(application);
+    }
+
+    /**
+     * PM rejects an application
+     */
+    public Application rejectByProjectManager(
+            String applicationId,
+            String projectManagerId,
+            String rejectionReason
+    ) {
+        Application application = applicationRepository.findByApplicationId(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        if (application.getCurrentStatus() != ApplicationStatus.SUGGESTED) {
+            throw new RuntimeException("Only SUGGESTED applications can be rejected by Project Manager");
+        }
+
+        application.setCurrentStatus(ApplicationStatus.REJECTED_BY_PM);
+//        application.setApprovedBy(new UserAction(projectManagerId, Role.PROJECT_MANAGER));
+
+        application.getTimestamps().setRejectedAt(Instant.now());
+        application.getTimestamps().setRejectionReason(rejectionReason);
+
+        return applicationRepository.save(application);
+    }
+
+    public List<Application> getSuggestedApplications(String projectId) {
+        return applicationRepository.findByProjectIdAndCurrentStatus(
+                projectId,
+                ApplicationStatus.SUGGESTED
+        );
+    }
+
 }

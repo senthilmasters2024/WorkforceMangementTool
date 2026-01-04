@@ -1,10 +1,14 @@
 package com.frauas.workforce.service;
 
 import com.frauas.workforce.DTO.ApplicationResponseDTO;
+import com.frauas.workforce.DTO.ProjectResponseDto;
 import com.frauas.workforce.DTO.SuggestProjectRequest;
+import com.frauas.workforce.DTO.SuggestedProjectResponseDTO;
 import com.frauas.workforce.model.*;
 import com.frauas.workforce.repository.ApplicationRepository;
 import com.frauas.workforce.repository.EmployeeRepository;
+import com.frauas.workforce.repository.ProjectManagerRepository;
+import com.frauas.workforce.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,9 @@ public class ApplicationService {
 
     @Autowired
     private EmployeeRepository employeeRepository; // fetch employee names
+
+    @Autowired
+    private ProjectManagerRepository projectRepo;
 
     public ApplicationResponseDTO suggestProjectToEmployee(SuggestProjectRequest request) {
 
@@ -101,12 +108,12 @@ public class ApplicationService {
         return new ApplicationResponseDTO.UserActionDTO(action.getUserId(), username, action.getRole());
     }
 
-    public List<Application> getSuggestedProjectsForEmployee(Integer employeeId) {
-        return applicationRepository.findByEmployeeIdAndCurrentStatus(
-                employeeId,
-                ApplicationStatus.SUGGESTED
-        );
-    }
+//    public List<Application> getSuggestedProjectsForEmployee(Integer employeeId) {
+//        return applicationRepository.findByEmployeeIdAndCurrentStatus(
+//                employeeId,
+//                ApplicationStatus.SUGGESTED
+//        );
+//    }
 
     public Application applyToSuggestedProject(String applicationId, Integer employeeId) {
 
@@ -205,5 +212,70 @@ public class ApplicationService {
         // Group by projectId
         return applications.stream()
                 .collect(java.util.stream.Collectors.groupingBy(Application::getProjectId));
+    }
+    public List<SuggestedProjectResponseDTO> getSuggestedProjectsForEmployee(Integer employeeId) {
+
+        // 1. Fetch suggested applications for employee
+        List<Application> applications =
+                applicationRepository.findByEmployeeIdAndCurrentStatus(
+                        employeeId,
+                        ApplicationStatus.SUGGESTED
+                );
+
+        // 2. Map each application -> project
+        return applications.stream().map(application -> {
+
+            Project project = projectRepo.findByProjectId(application.getProjectId())
+                    .orElseThrow(() -> new RuntimeException(
+                            "Project not found for projectId: " + application.getProjectId()
+                    ));
+
+            return new SuggestedProjectResponseDTO(
+                    mapToApplicationResponse(application),
+                    mapToProjectResponse(project)
+            );
+
+        }).toList();
+    }
+
+    // ------------------ MAPPERS ------------------
+
+    private ApplicationResponseDTO mapToApplicationResponse(Application app) {
+        return new ApplicationResponseDTO(
+                app.getId(),
+                app.getProjectId(),
+                app.getEmployeeId(),
+                app.getProjectRole(),
+                app.getCurrentStatus(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                app.getTimestamps()
+        );
+    }
+
+    private ProjectResponseDto mapToProjectResponse(Project project) {
+        return new ProjectResponseDto(
+                project.getId(),
+                project.getProjectId(),
+                project.getProjectDescription(),
+                project.getProjectStart(),
+                project.getProjectEnd(),
+                project.getTaskDescription(),
+                null,
+                project.getLinks(),
+                project.getSelectedSkills(),
+                project.getSelectedLocations(),
+                null,
+                project.getStatus(),
+                project.getIsPublished(),
+                project.getCreatedBy(),
+                project.getCreatedAt(),
+                project.getUpdatedAt(),
+                project.getUpdatedBy()
+        );
     }
 }

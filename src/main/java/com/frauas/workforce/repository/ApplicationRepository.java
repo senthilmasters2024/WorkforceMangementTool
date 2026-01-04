@@ -21,5 +21,50 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
             String projectId,
             String projectRole
     );
+    /**
+     * Find application by business applicationId
+     */
+//    Optional<Application> findByApplicationId(String applicationId);
 
+    /**
+     * PM: Get all suggested applications for a project
+     */
+    List<Application> findByProjectIdAndCurrentStatus(
+            String projectId,
+            ApplicationStatus status
+    );
+
+    /**
+     * PM / DH: Get applications by project and multiple statuses
+     */
+    List<Application> findByProjectIdAndCurrentStatusIn(
+            String projectId,
+            List<ApplicationStatus> statuses
+    );
+
+    /**
+     * DH: Get applications for multiple employees
+     */
+    List<Application> findByEmployeeIdIn(List<Integer> employeeIds);
+
+    /**
+     * DH: Get applications for department employees filtered by status
+     */
+    List<Application> findByEmployeeIdInAndCurrentStatus(
+            List<Integer> employeeIds,
+            ApplicationStatus status
+    );
+
+    /**
+     * DH: Get applications for department employees (all statuses)
+     */
+    List<Application> findByEmployeeIdInAndCurrentStatusIn(
+            List<Integer> employeeIds,
+            List<ApplicationStatus> statuses
+    );
+
+    /**
+     * Fetch all applications for a project (audit / reporting)
+     */
+    List<Application> findByProjectId(String projectId);
 }
