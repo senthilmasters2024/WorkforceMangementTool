@@ -21,6 +21,8 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
             String projectId,
             String projectRole
     );
+
+    List<Application> findByCurrentStatus(ApplicationStatus status);
     /**
      * Find application by business applicationId
      */

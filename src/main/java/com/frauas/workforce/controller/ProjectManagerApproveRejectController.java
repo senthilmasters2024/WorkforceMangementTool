@@ -38,12 +38,10 @@ public class ProjectManagerApproveRejectController {
             @ApiResponse(responseCode = "404", description = "Project not found",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping("/applications/project/{projectId}/suggested")
-    public ResponseEntity<List<Application>> getSuggestedApplications(
-            @PathVariable String projectId
-    ) {
+    @GetMapping("/applications/suggested")
+    public ResponseEntity<List<Application>> getAllSuggestedApplications() {
         return ResponseEntity.ok(
-                projectManagerService.getSuggestedApplications(projectId)
+                projectManagerService.getAllSuggestedApplications()
         );
     }
 
@@ -119,5 +117,19 @@ public class ProjectManagerApproveRejectController {
             return ResponseEntity.status(status)
                     .body(new ErrorResponse(e.getMessage(), status.value()));
         }
+    }
+
+    @Operation(
+            summary = "View applied applications",
+            description = "Project Manager views all applied project applications"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved applied applications")
+    })
+    @GetMapping("/applications/applied")
+    public ResponseEntity<List<Application>> getAppliedApplications() {
+        return ResponseEntity.ok(
+                projectManagerService.getAppliedApplications()
+        );
     }
 }

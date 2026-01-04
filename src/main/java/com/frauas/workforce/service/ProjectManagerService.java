@@ -469,11 +469,11 @@ public class ProjectManagerService {
         return applicationRepository.save(application);
     }
 
-    public List<Application> getSuggestedApplications(String projectId) {
-        return applicationRepository.findByProjectIdAndCurrentStatus(
-                projectId,
-                ApplicationStatus.SUGGESTED
-        );
+    public List<Application> getAllSuggestedApplications() {
+        return applicationRepository.findByCurrentStatus(ApplicationStatus.SUGGESTED);
     }
 
+    public List<Application> getAppliedApplications() {
+        return applicationRepository.findByCurrentStatus(ApplicationStatus.APPLIED);
+    }
 }
