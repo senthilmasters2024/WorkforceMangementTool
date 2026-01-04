@@ -77,4 +77,16 @@ public class ApplicationController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(application);
     }
+
+    @GetMapping("/all")
+    public List<Application> getAllApplications() {
+        return applicationService.getAllApplications();
+    }
+
+    @GetMapping("/grouped-by-project")
+    public java.util.Map<String, List<Application>> getApplicationsGroupedByProject(
+            @RequestParam(required = false) String status
+    ) {
+        return applicationService.getApplicationsGroupedByProject(status);
+    }
 }

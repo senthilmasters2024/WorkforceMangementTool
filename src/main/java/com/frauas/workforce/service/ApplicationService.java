@@ -181,4 +181,29 @@ public class ApplicationService {
         // Save to database
         return applicationRepository.save(application);
     }
+
+    public List<Application> getAllApplications() {
+        return applicationRepository.findAll();
+    }
+
+    public java.util.Map<String, List<Application>> getApplicationsGroupedByProject(String statusFilter) {
+        List<Application> applications = applicationRepository.findAll();
+
+        // Filter by status if provided
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            try {
+                ApplicationStatus status = ApplicationStatus.valueOf(statusFilter);
+                applications = applications.stream()
+                        .filter(app -> app.getCurrentStatus() == status)
+                        .collect(java.util.stream.Collectors.toList());
+            } catch (IllegalArgumentException e) {
+                // Invalid status, return empty map
+                return new java.util.HashMap<>();
+            }
+        }
+
+        // Group by projectId
+        return applications.stream()
+                .collect(java.util.stream.Collectors.groupingBy(Application::getProjectId));
+    }
 }

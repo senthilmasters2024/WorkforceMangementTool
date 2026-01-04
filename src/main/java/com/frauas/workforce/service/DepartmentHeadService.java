@@ -42,8 +42,8 @@ public class DepartmentHeadService {
                 .orElseThrow(() -> new RuntimeException("Application not found"));
 
         // 2. Validate application status
-        if (application.getCurrentStatus() != ApplicationStatus.APPLIED) {
-            throw new RuntimeException("Only applications with APPLIED status can be approved");
+        if (application.getCurrentStatus() != ApplicationStatus.REQUEST_DH_APPROVAL) {
+            throw new RuntimeException("Only applications with REQUEST_DH_APPROVAL status can be approved");
         }
 
         // 3. Get the employee's department
@@ -64,8 +64,8 @@ public class DepartmentHeadService {
             throw new RuntimeException("Only Department Heads can approve applications");
         }
 
-        // 7. Update the application
-        application.setCurrentStatus(ApplicationStatus.APPROVED);
+        // 7. Update the application (DH approval is final step - employee is assigned)
+        application.setCurrentStatus(ApplicationStatus.COMPLETED);
 
         // 8. Set approvedBy
         UserAction approvedBy = new UserAction();
@@ -84,7 +84,11 @@ public class DepartmentHeadService {
         }
         application.getTimestamps().setApprovedAt(Date.from(Instant.now()));
 
-        // 11. Save and return
+        // 11. Update employee's assignedProjectId
+        employee.setAssignedProjectId(application.getProjectId());
+        employeeRepository.save(employee);
+
+        // 12. Save and return
         return applicationRepository.save(application);
     }
 
@@ -109,8 +113,8 @@ public class DepartmentHeadService {
                 .orElseThrow(() -> new RuntimeException("Application not found"));
 
         // 3. Validate application status
-        if (application.getCurrentStatus() != ApplicationStatus.APPLIED) {
-            throw new RuntimeException("Only applications with APPLIED status can be rejected");
+        if (application.getCurrentStatus() != ApplicationStatus.REQUEST_DH_APPROVAL) {
+            throw new RuntimeException("Only applications with REQUEST_DH_APPROVAL status can be rejected");
         }
 
         // 4. Get the employee's department
@@ -132,7 +136,7 @@ public class DepartmentHeadService {
         }
 
         // 8. Update the application
-        application.setCurrentStatus(ApplicationStatus.REJECTED);
+        application.setCurrentStatus(ApplicationStatus.REJECTED_BY_DH);
 
         // 9. Set rejectedBy
         UserAction rejectedBy = new UserAction();

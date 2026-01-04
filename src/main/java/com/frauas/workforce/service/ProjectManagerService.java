@@ -2,9 +2,9 @@ package com.frauas.workforce.service;
 
 import com.frauas.workforce.DTO.*;
 import com.frauas.workforce.ExceptionHandling.ResourceNotFoundException;
-import com.frauas.workforce.model.Project;
-import com.frauas.workforce.model.ProjectStatus;
-
+import com.frauas.workforce.model.*;
+import com.frauas.workforce.repository.ApplicationRepository;
+import com.frauas.workforce.repository.EmployeeRepository;
 import com.frauas.workforce.repository.ProjectManagerRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -12,9 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,6 +37,13 @@ import java.util.stream.Collectors;
 @Service
 public class ProjectManagerService {
     private final ProjectManagerRepository projectRepository;
+
+    @Autowired
+    private ApplicationRepository applicationRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
     private static final Logger log = LoggerFactory.getLogger(ProjectManagerService.class);
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String NUMBERS = "0123456789";
