@@ -49,9 +49,9 @@ public class ApplicationService {
         }
 
         Application application = new Application();
-        // Generate unique application ID in format: App_{projectId}_{counter}
-        long counter = applicationRepository.count() + 1;
-        application.setApplicationId("App_" + request.getProjectId() + "_" + counter);
+        // Generate unique application ID using UUID to prevent duplicates
+        String uniqueId = UUID.randomUUID().toString().substring(0, 8);
+        application.setApplicationId("App_" + request.getProjectId() + "_" + uniqueId);
         application.setProjectId(request.getProjectId());
         application.setEmployeeId(request.getEmployeeId());
         application.setCurrentStatus(ApplicationStatus.SUGGESTED);
@@ -161,9 +161,9 @@ public class ApplicationService {
         // Create a new application
         Application application = new Application();
 
-        // Generate unique application ID in format: App_{projectId}_{counter}
-        long counter = applicationRepository.count() + 1;
-        application.setApplicationId("App_" + projectId + "_" + counter);
+        // Generate unique application ID using UUID to prevent duplicates
+        String uniqueId = UUID.randomUUID().toString().substring(0, 8);
+        application.setApplicationId("App_" + projectId + "_" + uniqueId);
 
         // Set basic fields
         application.setEmployeeId(employeeId);
