@@ -3,6 +3,7 @@ package com.frauas.workforce.service;
 import com.frauas.workforce.model.*;
 import com.frauas.workforce.repository.ApplicationRepository;
 import com.frauas.workforce.repository.EmployeeRepository;
+import com.frauas.workforce.repository.ProjectManagerRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class DepartmentHeadService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private ProjectManagerRepository projectRepository;
 
     /**
      * Approve an employee's application for a project
@@ -84,12 +88,17 @@ public class DepartmentHeadService {
         }
         application.getTimestamps().setApprovedAt(Date.from(Instant.now()));
 
-        // 11. Update employee's assignedProjectId and set project start date
+        // 11. Get project details to set employee project dates
+        Project project = projectRepository.findByProjectId(application.getProjectId())
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        // 11.5. Update employee's assignedProjectId
         employee.setAssignedProjectId(application.getProjectId());
         employeeRepository.save(employee);
 
-        // 11.5. Automatically set employee project start date to today
-        application.setEmployeeProjectStartDate(java.time.LocalDate.now());
+        // 11.6. Set employee project dates from project dates (not today's date)
+        application.setEmployeeProjectStartDate(project.getProjectStart());
+        application.setEmployeeProjectEndDate(project.getProjectEnd());
 
         // 12. Auto-reject all other pending applications by this employee
         List<Application> allEmployeeApplications = applicationRepository.findByEmployeeId(application.getEmployeeId());

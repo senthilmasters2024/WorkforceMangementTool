@@ -132,48 +132,4 @@ public class ProjectManagerApproveRejectController {
                 projectManagerService.getAppliedApplications()
         );
     }
-
-    /**
-     * Mark employee project as completed (changes status to PROJECT_COMPLETED)
-     */
-    @Operation(
-            summary = "Mark employee project as completed",
-            description = "Project Manager marks an employee's project work as completed. " +
-                    "Changes status from COMPLETED to PROJECT_COMPLETED, " +
-                    "sets employeeProjectEndDate to today, " +
-                    "and frees up the employee making them available for new projects."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Status changed to PROJECT_COMPLETED successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid status or employee not assigned",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Application not found",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @PostMapping("/applications/{applicationId}/mark-completed")
-    public ResponseEntity<?> markEmployeeProjectCompleted(
-            @PathVariable String applicationId,
-            @RequestParam(required = false) String comments
-    ) {
-        try {
-            Application application = projectManagerService.markEmployeeProjectCompleted(
-                    applicationId,
-                    comments
-            );
-
-            java.util.Map<String, Object> response = new java.util.HashMap<>();
-            response.put("application", application);
-            response.put("message", "Status changed to PROJECT_COMPLETED. Employee is now available for new assignments.");
-
-            return ResponseEntity.ok(response);
-
-        } catch (RuntimeException e) {
-            HttpStatus status = e.getMessage().contains("not found")
-                    ? HttpStatus.NOT_FOUND
-                    : HttpStatus.BAD_REQUEST;
-
-            return ResponseEntity.status(status)
-                    .body(new ErrorResponse(e.getMessage(), status.value()));
-        }
-    }
 }
