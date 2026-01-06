@@ -84,9 +84,12 @@ public class DepartmentHeadService {
         }
         application.getTimestamps().setApprovedAt(Date.from(Instant.now()));
 
-        // 11. Update employee's assignedProjectId
+        // 11. Update employee's assignedProjectId and set project start date
         employee.setAssignedProjectId(application.getProjectId());
         employeeRepository.save(employee);
+
+        // 11.5. Automatically set employee project start date to today
+        application.setEmployeeProjectStartDate(java.time.LocalDate.now());
 
         // 12. Auto-reject all other pending applications by this employee
         List<Application> allEmployeeApplications = applicationRepository.findByEmployeeId(application.getEmployeeId());

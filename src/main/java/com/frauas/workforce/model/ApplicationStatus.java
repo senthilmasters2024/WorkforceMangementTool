@@ -7,7 +7,8 @@ public enum ApplicationStatus {
     REQUEST_DH_APPROVAL,
     REJECTED_BY_PM,
     REJECTED_BY_DH,
-    COMPLETED,
+    COMPLETED,              // DH approved - employee is assigned to project
+    PROJECT_COMPLETED,      // Employee finished working on the project (history)
 
     // Old statuses for backward compatibility (deprecated)
     @Deprecated

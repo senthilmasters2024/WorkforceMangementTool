@@ -40,5 +40,9 @@ public class Application {
 
     private Timestamps timestamps;
 
+    // Project History Tracking
+    private java.time.LocalDate employeeProjectStartDate;  // When employee started working on this project
+    private java.time.LocalDate employeeProjectEndDate;    // When employee finished working on this project
+
     // Getters and Setters
 }
