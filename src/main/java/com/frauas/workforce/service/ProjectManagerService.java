@@ -442,7 +442,7 @@ public class ProjectManagerService {
         application.setCurrentStatus(ApplicationStatus.REQUEST_DH_APPROVAL);
         UserAction approvedBy = new UserAction();
         approvedBy.setUserId(projectManagerId);
-        approvedBy.setUserName(employee.getUsername());
+        approvedBy.setUserName(employee.getFirstName() + " " + employee.getLastName());
         approvedBy.setRole("PROJECT_MANAGER");
         application.setApprovedByProjectManager(approvedBy);
 
@@ -471,7 +471,7 @@ public class ProjectManagerService {
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
 
         application.setCurrentStatus(ApplicationStatus.REJECTED_BY_PM);
-        application.setRejectedBy(new UserAction(projectManagerId, employee.getUsername(), Role.PROJECT_MANAGER));
+        application.setRejectedBy(new UserAction(projectManagerId, employee.getFirstName() + " " + employee.getLastName(), Role.PROJECT_MANAGER));
 
         application.getTimestamps().setRejectedAt(Instant.now());
         application.getTimestamps().setRejectionReason(rejectionReason);

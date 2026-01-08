@@ -59,7 +59,7 @@ public class ApplicationService {
         // suggestedBy
         UserAction suggestedBy = new UserAction();
         suggestedBy.setUserId(request.getPlannerUserId());
-        suggestedBy.setUserName(employee.getUsername());
+        suggestedBy.setUserName(employee.getFirstName() + " " + employee.getLastName());
         suggestedBy.setRole("RESOURCE_PLANNER");
         application.setSuggestedBy(suggestedBy);
         application.setProjectRole(request.getProjectRole());
@@ -142,7 +142,7 @@ public class ApplicationService {
         // initiatedBy
         UserAction intiatedBy = new UserAction();
         intiatedBy.setUserId(String.valueOf(employeeId));
-        intiatedBy.setUserName(employee.getUsername());
+        intiatedBy.setUserName(employee.getFirstName() + " " + employee.getLastName());
         intiatedBy.setRole("EMPLOYEE");
         application.setInitiatedBy(intiatedBy);
 

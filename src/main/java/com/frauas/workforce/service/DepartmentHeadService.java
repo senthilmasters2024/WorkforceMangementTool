@@ -74,7 +74,7 @@ public class DepartmentHeadService {
         // 8. Set approvedBy
         UserAction approvedBy = new UserAction();
         approvedBy.setUserId(departmentHeadId.toString());
-        approvedBy.setUserName(departmentHead.getUsername());
+        approvedBy.setUserName(departmentHead.getFirstName() + " " + departmentHead.getLastName());
         approvedBy.setRole(Role.DEPARTMENT_HEAD.name());
         application.setApprovedByDepartmentHead(approvedBy);
 
@@ -122,6 +122,7 @@ public class DepartmentHeadService {
                 // Set rejectedBy to the same DH who approved
                 UserAction autoRejectedBy = new UserAction();
                 autoRejectedBy.setUserId(departmentHeadId.toString());
+                autoRejectedBy.setUserName(employee.getFirstName() + " " + employee.getLastName());
                 autoRejectedBy.setRole(Role.DEPARTMENT_HEAD.name());
                 otherApp.setRejectedBy(autoRejectedBy);
 
