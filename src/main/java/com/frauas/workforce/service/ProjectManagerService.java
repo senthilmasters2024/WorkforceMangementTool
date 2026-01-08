@@ -432,12 +432,19 @@ public class ProjectManagerService {
         Application application = applicationRepository.findByApplicationId(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found"));
 
+        Employee employee = employeeRepository.findByEmployeeId(Integer.valueOf(projectManagerId))
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
         if (application.getCurrentStatus() != ApplicationStatus.APPLIED) {
             throw new RuntimeException("Only APPLIED applications can be sent for Department Head approval. Current status: " + application.getCurrentStatus());
         }
 
         application.setCurrentStatus(ApplicationStatus.REQUEST_DH_APPROVAL);
-//        application.setApprovedBy(new UserAction(projectManagerId, Role.PROJECT_MANAGER));
+        UserAction approvedBy = new UserAction();
+        approvedBy.setUserId(projectManagerId);
+        approvedBy.setUserName(employee.getUsername());
+        approvedBy.setRole("PROJECT_MANAGER");
+        application.setApprovedByProjectManager(approvedBy);
 
         application.getTimestamps().setApprovedAt(Date.from(Instant.now()));
         application.getTimestamps().setPmComments(comments);
@@ -460,8 +467,11 @@ public class ProjectManagerService {
             throw new RuntimeException("Only SUGGESTED applications can be rejected by Project Manager");
         }
 
+        Employee employee = employeeRepository.findByEmployeeId(Integer.valueOf(projectManagerId))
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
         application.setCurrentStatus(ApplicationStatus.REJECTED_BY_PM);
-//        application.setApprovedBy(new UserAction(projectManagerId, Role.PROJECT_MANAGER));
+        application.setRejectedBy(new UserAction(projectManagerId, employee.getUsername(), Role.PROJECT_MANAGER));
 
         application.getTimestamps().setRejectedAt(Instant.now());
         application.getTimestamps().setRejectionReason(rejectionReason);

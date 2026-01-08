@@ -29,9 +29,9 @@ public class Application {
 
     private UserAction initiatedBy;
     private UserAction suggestedBy;
-    private UserAction approvedBy;
+    private UserAction approvedByProjectManager;
+    private UserAction approvedByDepartmentHead;
     private UserAction rejectedBy;
-    private UserAction confirmedBy;
 
     private UserAction appliedAt;
 

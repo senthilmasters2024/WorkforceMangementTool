@@ -59,7 +59,7 @@ public class ProjectManagerApproveRejectController {
             @ApiResponse(responseCode = "404", description = "Application not found",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping("/applications/{applicationId}/request-dh-approval")
+    @PutMapping("/applications/{applicationId}/request-dh-approval")
     public ResponseEntity<?> requestDhApproval(
             @PathVariable String applicationId,
             @RequestBody RequestDepartmentHeadApprovalRequest request

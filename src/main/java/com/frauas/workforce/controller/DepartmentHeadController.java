@@ -47,7 +47,7 @@ public class DepartmentHeadController {
             @ApiResponse(responseCode = "404", description = "Application not found",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping("/applications/{applicationId}/approve")
+    @PutMapping("/applications/{applicationId}/approve")
     public ResponseEntity<?> approveApplication(
             @Parameter(description = "Unique application ID", required = true)
             @PathVariable String applicationId,
@@ -97,7 +97,7 @@ public class DepartmentHeadController {
             @ApiResponse(responseCode = "404", description = "Application not found",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping("/applications/{applicationId}/reject")
+    @PutMapping("/applications/{applicationId}/reject")
     public ResponseEntity<?> rejectApplication(
             @Parameter(description = "Unique application ID", required = true)
             @PathVariable String applicationId,

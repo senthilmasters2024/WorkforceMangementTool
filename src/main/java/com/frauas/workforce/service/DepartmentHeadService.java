@@ -74,8 +74,9 @@ public class DepartmentHeadService {
         // 8. Set approvedBy
         UserAction approvedBy = new UserAction();
         approvedBy.setUserId(departmentHeadId.toString());
+        approvedBy.setUserName(departmentHead.getUsername());
         approvedBy.setRole(Role.DEPARTMENT_HEAD.name());
-        application.setApprovedBy(approvedBy);
+        application.setApprovedByDepartmentHead(approvedBy);
 
         // 9. Set approval comments if provided
         if (comments != null && !comments.trim().isEmpty()) {
@@ -94,6 +95,8 @@ public class DepartmentHeadService {
 
         // 11.5. Update employee's assignedProjectId
         employee.setAssignedProjectId(application.getProjectId());
+        employee.setAvailabilityStatus(AvailabilityStatus.NOT_AVAILABLE);
+        employee.setSupervisor(project.getCreatedBy());
         employeeRepository.save(employee);
 
         // 11.6. Set employee project dates from project dates (not today's date)
@@ -180,6 +183,7 @@ public class DepartmentHeadService {
         // 9. Set rejectedBy
         UserAction rejectedBy = new UserAction();
         rejectedBy.setUserId(departmentHeadId.toString());
+        rejectedBy.setUserName(departmentHead.getUsername());
         rejectedBy.setRole(Role.DEPARTMENT_HEAD.name());
         application.setRejectedBy(rejectedBy);
 

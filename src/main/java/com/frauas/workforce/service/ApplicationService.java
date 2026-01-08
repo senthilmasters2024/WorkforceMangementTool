@@ -1,9 +1,6 @@
 package com.frauas.workforce.service;
 
-import com.frauas.workforce.DTO.ApplicationResponseDTO;
-import com.frauas.workforce.DTO.ProjectResponseDto;
-import com.frauas.workforce.DTO.SuggestProjectRequest;
-import com.frauas.workforce.DTO.SuggestedProjectResponseDTO;
+import com.frauas.workforce.DTO.*;
 import com.frauas.workforce.model.*;
 import com.frauas.workforce.repository.ApplicationRepository;
 import com.frauas.workforce.repository.EmployeeRepository;
@@ -44,6 +41,9 @@ public class ApplicationService {
                         request.getProjectRole()
                 );
 
+        Employee employee = employeeRepository.findByEmployeeId(Integer.valueOf(request.getPlannerUserId()))
+                .orElseThrow(() -> new RuntimeException("Department Head not found"));
+
         if (existingApplication.isPresent()) {
             return null; // Will be handled in controller to return error response
         }
@@ -59,6 +59,7 @@ public class ApplicationService {
         // suggestedBy
         UserAction suggestedBy = new UserAction();
         suggestedBy.setUserId(request.getPlannerUserId());
+        suggestedBy.setUserName(employee.getUsername());
         suggestedBy.setRole("RESOURCE_PLANNER");
         application.setSuggestedBy(suggestedBy);
         application.setProjectRole(request.getProjectRole());
@@ -78,6 +79,7 @@ public class ApplicationService {
     private ApplicationResponseDTO mapToResponseDTO(Application app) {
         ApplicationResponseDTO dto = new ApplicationResponseDTO();
         dto.setId(app.getId());
+        dto.setApplicationId(app.getApplicationId());
         dto.setProjectId(app.getProjectId());
         dto.setEmployeeId(app.getEmployeeId());
         dto.setProjectRole(app.getProjectRole());
@@ -86,8 +88,9 @@ public class ApplicationService {
 
         dto.setInitiatedBy(mapUserAction(app.getInitiatedBy()));
         dto.setSuggestedBy(mapUserAction(app.getSuggestedBy()));
-        dto.setApprovedBy(mapUserAction(app.getApprovedBy()));
-        dto.setConfirmedBy(mapUserAction(app.getConfirmedBy()));
+        dto.setApprovedByDepartmentHead(mapUserAction(app.getApprovedByDepartmentHead()));
+        dto.setApprovedByProjectManager(mapUserAction(app.getApprovedByProjectManager()));
+        dto.setRejectedBy(mapUserAction(app.getRejectedBy()));
 
         return dto;
     }
@@ -115,10 +118,13 @@ public class ApplicationService {
 //        );
 //    }
 
-    public Application applyToSuggestedProject(String applicationId, Integer employeeId) {
+    public ApplicationResponseDTO applyToSuggestedProject(String applicationId, Integer employeeId) {
 
         Application application = applicationRepository.findByApplicationId(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        Employee employee = employeeRepository.findByEmployeeId(application.getEmployeeId())
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
 
         // Ownership check
         if (!application.getEmployeeId().equals(employeeId)) {
@@ -133,26 +139,33 @@ public class ApplicationService {
         // Update status
         application.setCurrentStatus(ApplicationStatus.APPLIED);
 
-        // Set initiatedBy correctly
-        UserAction initiatedBy = new UserAction(
-                employeeId.toString(),
-                Role.EMPLOYEE
-        );
-        application.setInitiatedBy(initiatedBy);
+        // initiatedBy
+        UserAction intiatedBy = new UserAction();
+        intiatedBy.setUserId(String.valueOf(employeeId));
+        intiatedBy.setUserName(employee.getUsername());
+        intiatedBy.setRole("EMPLOYEE");
+        application.setInitiatedBy(intiatedBy);
 
-        // Set timestamp
+        // timestamps
         if (application.getTimestamps() == null) {
             application.setTimestamps(new Timestamps());
         }
         application.getTimestamps().setAppliedAt(Date.from(Instant.now()));
 
-        return applicationRepository.save(application);
+        Application saved = applicationRepository.save(application);
+
+        // MAP & RETURN DTO
+        return mapToResponseDTO(saved);
     }
 
-    public Application applyToOpenProject(Integer employeeId, String projectId, String projectRole) {
+
+    public ApplicationResponseDTO applyToOpenProject(Integer employeeId, String projectId, String projectRole) {
         // Validate: Check if employee has already applied for this project and role
         Optional<Application> existingApplication = applicationRepository
                 .findByEmployeeIdAndProjectIdAndProjectRole(employeeId, projectId, projectRole);
+
+        Employee employee = employeeRepository.findByEmployeeId(employeeId)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
 
         if (existingApplication.isPresent()) {
             return null; // Will be handled in controller to return error response
@@ -176,6 +189,7 @@ public class ApplicationService {
         // Set initiatedBy to employee
         UserAction initiatedBy = new UserAction(
                 employeeId.toString(),
+                employee.getUsername(),
                 Role.EMPLOYEE
         );
         application.setInitiatedBy(initiatedBy);
@@ -186,7 +200,10 @@ public class ApplicationService {
         application.setTimestamps(timestamps);
 
         // Save to database
-        return applicationRepository.save(application);
+        Application saved = applicationRepository.save(application);
+
+        // MAP & RETURN DTO
+        return mapToResponseDTO(saved);
     }
 
     public List<Application> getAllApplications() {
@@ -213,13 +230,13 @@ public class ApplicationService {
         return applications.stream()
                 .collect(java.util.stream.Collectors.groupingBy(Application::getProjectId));
     }
+
     public List<SuggestedProjectResponseDTO> getSuggestedProjectsForEmployee(Integer employeeId) {
 
         // 1. Fetch suggested applications for employee
         List<Application> applications =
-                applicationRepository.findByEmployeeIdAndCurrentStatus(
-                        employeeId,
-                        ApplicationStatus.SUGGESTED
+                applicationRepository.findByEmployeeId(
+                        employeeId
                 );
 
         // 2. Map each application -> project
@@ -241,41 +258,105 @@ public class ApplicationService {
     // ------------------ MAPPERS ------------------
 
     private ApplicationResponseDTO mapToApplicationResponse(Application app) {
-        return new ApplicationResponseDTO(
-                app.getId(),
-                app.getProjectId(),
-                app.getEmployeeId(),
-                app.getProjectRole(),
-                app.getCurrentStatus(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                app.getTimestamps()
+
+        ApplicationResponseDTO dto = new ApplicationResponseDTO();
+
+        dto.setId(app.getId());
+        dto.setApplicationId(app.getApplicationId());
+        dto.setProjectId(app.getProjectId());
+        dto.setEmployeeId(app.getEmployeeId());
+        dto.setProjectRole(app.getProjectRole());
+        dto.setCurrentStatus(app.getCurrentStatus());
+
+//        dto.setRequestedCapacity(app.getRequestedCapacity());
+//        dto.setApprovedCapacity(app.getApprovedCapacity());
+
+        // Map UserActions → UserActionDTO
+        dto.setInitiatedBy(mapUserActionToDto(app.getInitiatedBy()));
+        dto.setSuggestedBy(mapUserActionToDto(app.getSuggestedBy()));
+        dto.setApprovedByDepartmentHead(mapUserActionToDto(app.getApprovedByDepartmentHead()));
+        dto.setApprovedByProjectManager(mapUserActionToDto(app.getApprovedByProjectManager()));
+        dto.setRejectedBy(mapUserActionToDto(app.getRejectedBy()));
+
+        dto.setTimestamps(app.getTimestamps());
+
+        return dto;
+    }
+
+    private ApplicationResponseDTO.UserActionDTO mapUserActionToDto(UserAction action) {
+        if (action == null) return null;
+
+        return new ApplicationResponseDTO.UserActionDTO(
+                action.getUserId(),
+                action.getUserName(),
+                action.getRole()
         );
     }
 
+
+
     private ProjectResponseDto mapToProjectResponse(Project project) {
-        return new ProjectResponseDto(
-                project.getId(),
-                project.getProjectId(),
-                project.getProjectDescription(),
-                project.getProjectStart(),
-                project.getProjectEnd(),
-                project.getTaskDescription(),
-                null,
-                project.getLinks(),
-                project.getSelectedSkills(),
-                project.getSelectedLocations(),
-                null,
-                project.getStatus(),
-                project.getIsPublished(),
-                project.getCreatedBy(),
-                project.getCreatedAt(),
-                project.getUpdatedAt(),
-                project.getUpdatedBy()
-        );
+
+        ProjectResponseDto dto = new ProjectResponseDto();
+        RoleRequirementDto responseDto  = new RoleRequirementDto();
+
+        dto.setId(project.getId());
+        dto.setProjectId(project.getProjectId());
+        dto.setProjectDescription(project.getProjectDescription());
+        dto.setProjectStart(project.getProjectStart());
+        dto.setProjectEnd(project.getProjectEnd());
+        dto.setTaskDescription(project.getTaskDescription());
+
+        // If you later map managers / owners, do it here
+//        dto.setProjectManager(null);
+
+        dto.setLinks(project.getLinks());
+        dto.setSelectedSkills(project.getSelectedSkills());
+        dto.setSelectedLocations(project.getSelectedLocations());
+
+        // Role mapping (custom because inner class differs)
+        dto.setRoles(mapRoleRequirements(project.getRoles()));
+
+
+        dto.setStatus(project.getStatus());
+        dto.setIsPublished(project.getIsPublished());
+        dto.setCreatedBy(project.getCreatedBy());
+        dto.setCreatedAt(project.getCreatedAt());
+        dto.setUpdatedAt(project.getUpdatedAt());
+        dto.setUpdatedBy(project.getUpdatedBy());
+
+        return dto;
     }
+
+    private List<RoleRequirementDto> mapRoleRequirements(
+            List<Project.RoleRequirement> roles
+    ) {
+        if (roles == null) return null;
+
+        return roles.stream()
+                .map(role -> {
+                    RoleRequirementDto dto = new RoleRequirementDto();
+
+                    // Core fields
+                    dto.setRequiredRole(role.getRequiredRole());
+                    dto.setRequiredCompetencies(role.getRequiredCompetencies());
+
+                    // Capacity & count
+                    dto.setCapacity(role.getCapacity());
+                    dto.setNumberOfEmployees(role.getNumberOfEmployees());
+
+                    // Optional UI-only fields (not persisted)
+                    dto.setRoleInput(null);
+                    dto.setCompetencyInput(null);
+
+                    // UI flags (safe defaults)
+                    dto.setShowRoleDropdown(false);
+                    dto.setShowCompetencyDropdown(false);
+
+                    return dto;
+                })
+                .toList();
+    }
+
+
 }

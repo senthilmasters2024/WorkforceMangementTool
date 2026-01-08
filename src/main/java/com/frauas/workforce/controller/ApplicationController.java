@@ -2,6 +2,7 @@ package com.frauas.workforce.controller;
 
 import com.frauas.workforce.DTO.*;
 import com.frauas.workforce.model.Application;
+import com.frauas.workforce.model.Employee;
 import com.frauas.workforce.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ public class ApplicationController {
 
     @Autowired
     public ApplicationService applicationService;
+
+
 
 //    public ApplicationController(ApplicationService applicationService) {
 //        this.applicationService = applicationService;
@@ -47,8 +50,8 @@ public class ApplicationController {
         return applicationService.getSuggestedProjectsForEmployee(employeeId);
     }
 
-    @PostMapping("/apply/suggestedProjects")
-    public Application applyToSuggestedProject(@RequestBody ApplyRequest request) {
+    @PutMapping("/apply/suggestedProjects")
+    public ApplicationResponseDTO applyToSuggestedProject(@RequestBody ApplyRequest request) {
         return applicationService.applyToSuggestedProject(
                 request.getApplicationId(),
                 request.getEmployeeId()
@@ -58,7 +61,7 @@ public class ApplicationController {
 
     @PostMapping("/apply/applyToOpenProject")
     public ResponseEntity<?> applyToOpenProjectAsNewApplication(@RequestBody Application request) {
-        Application application = applicationService.applyToOpenProject(
+        ApplicationResponseDTO application = applicationService.applyToOpenProject(
                 request.getEmployeeId(),
                 request.getProjectId(),
                 request.getProjectRole()

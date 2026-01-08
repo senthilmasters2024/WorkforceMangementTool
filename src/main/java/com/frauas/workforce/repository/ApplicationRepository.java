@@ -11,10 +11,10 @@ import java.util.Optional;
 @Repository
 public interface ApplicationRepository extends MongoRepository<Application, String> {
     List<Application> findByEmployeeId(Integer employeeId);
-    List<Application> findByEmployeeIdAndCurrentStatus(
-            Integer employeeId,
-            ApplicationStatus currentStatus
-    );
+//    List<Application> findByEmployeeIdAndCurrentStatus(
+//            Integer employeeId,
+//            ApplicationStatus currentStatus
+//    );
     Optional<Application> findByApplicationId(String applicationId);
     Optional<Application> findByEmployeeIdAndProjectIdAndProjectRole(
             Integer employeeId,
