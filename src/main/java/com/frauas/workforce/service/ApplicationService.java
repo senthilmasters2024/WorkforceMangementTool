@@ -248,7 +248,7 @@ public class ApplicationService {
                     ));
 
             return new SuggestedProjectResponseDTO(
-                    mapToApplicationResponse(application),
+                    mapToApplicationResponse(application, project),
                     mapToProjectResponse(project)
             );
 
@@ -257,7 +257,7 @@ public class ApplicationService {
 
     // ------------------ MAPPERS ------------------
 
-    private ApplicationResponseDTO mapToApplicationResponse(Application app) {
+    private ApplicationResponseDTO mapToApplicationResponse(Application app, Project project) {
 
         ApplicationResponseDTO dto = new ApplicationResponseDTO();
 
@@ -268,7 +268,7 @@ public class ApplicationService {
         dto.setProjectRole(app.getProjectRole());
         dto.setCurrentStatus(app.getCurrentStatus());
 
-//        dto.setRequestedCapacity(app.getRequestedCapacity());
+        dto.setRequestedCapacity(project.getRequiredEmployees());
 //        dto.setApprovedCapacity(app.getApprovedCapacity());
 
         // Map UserActions → UserActionDTO
@@ -306,6 +306,7 @@ public class ApplicationService {
         dto.setProjectStart(project.getProjectStart());
         dto.setProjectEnd(project.getProjectEnd());
         dto.setTaskDescription(project.getTaskDescription());
+//        dto.setRequiredEmployees(project.getRequiredEmployees());
 
         // If you later map managers / owners, do it here
 //        dto.setProjectManager(null);

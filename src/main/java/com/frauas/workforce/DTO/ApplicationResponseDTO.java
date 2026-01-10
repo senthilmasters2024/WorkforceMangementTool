@@ -18,7 +18,7 @@ public class ApplicationResponseDTO {
     private String projectRole;
     private ApplicationStatus currentStatus;
     private Integer requestedCapacity;
-    private Integer approvedCapacity;
+//    private Integer approvedCapacity;
 
     private UserActionDTO initiatedBy;
     private UserActionDTO suggestedBy;
