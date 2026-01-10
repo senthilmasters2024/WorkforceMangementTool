@@ -268,8 +268,16 @@ public class ApplicationService {
         dto.setProjectRole(app.getProjectRole());
         dto.setCurrentStatus(app.getCurrentStatus());
 
-        dto.setRequestedCapacity(project.getRequiredEmployees());
-//        dto.setApprovedCapacity(app.getApprovedCapacity());
+        // Map requestedCapacity from Project.roles
+        if (project.getRoles() != null && app.getProjectRole() != null) {
+            for (Project.RoleRequirement roleRequirement : project.getRoles()) {
+                if (app.getProjectRole().equalsIgnoreCase(roleRequirement.getRequiredRole())) {
+                    dto.setRequestedCapacity(Integer.valueOf(roleRequirement.getNumberOfEmployees()));
+                    break;
+                }
+            }
+        }
+
 
         // Map UserActions → UserActionDTO
         dto.setInitiatedBy(mapUserActionToDto(app.getInitiatedBy()));
