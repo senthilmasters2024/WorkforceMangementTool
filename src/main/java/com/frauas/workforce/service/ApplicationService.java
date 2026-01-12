@@ -314,7 +314,7 @@ public class ApplicationService {
         dto.setProjectStart(project.getProjectStart());
         dto.setProjectEnd(project.getProjectEnd());
         dto.setTaskDescription(project.getTaskDescription());
-//        dto.setRequiredEmployees(project.getRequiredEmployees());
+        dto.setRequiredEmployees(project.getRequiredEmployees());
 
         // If you later map managers / owners, do it here
 //        dto.setProjectManager(null);
