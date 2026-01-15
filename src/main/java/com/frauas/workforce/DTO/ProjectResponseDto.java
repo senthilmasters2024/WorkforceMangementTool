@@ -59,6 +59,8 @@ public class ProjectResponseDto {
 
     private Boolean isPublished;
 
+    private Boolean isExternalSearch;
+
     private String createdBy;
 
     private LocalDate createdAt;

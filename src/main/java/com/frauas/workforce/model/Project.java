@@ -74,6 +74,9 @@ public class Project {
 
     private Boolean isPublished = false;
 
+    @Field("isExternalSearch")
+    private Boolean isExternalSearch = false;
+
     @Field("createdBy")
     private String createdBy;
 

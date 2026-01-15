@@ -379,6 +379,7 @@ public class ProjectManagerService {
         response.setSelectedLocations(project.getSelectedLocations());
         response.setStatus(project.getStatus());
         response.setIsPublished(project.getIsPublished());
+        response.setIsExternalSearch(project.getIsExternalSearch());
         response.setCreatedBy(project.getCreatedBy());
         response.setCreatedAt(project.getCreatedAt());
         response.setUpdatedAt(project.getUpdatedAt());
@@ -485,5 +486,43 @@ public class ProjectManagerService {
 
     public List<Application> getAppliedApplications() {
         return applicationRepository.findByCurrentStatus(ApplicationStatus.APPLIED);
+    }
+
+    /**
+     * Trigger external search for a project.
+     * Sets the isExternalSearch flag to true.
+     *
+     * @param projectId The project ID
+     * @param projectManagerId The PM triggering the external search
+     * @return Updated project response
+     */
+    public ProjectResponseDto triggerExternalSearch(String projectId, String projectManagerId) {
+        log.info("Triggering external search for project ID: {}", projectId);
+
+        Project project = projectRepository.findByProjectId(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
+
+        project.setIsExternalSearch(true);
+        project.setUpdatedBy(projectManagerId);
+
+        Project savedProject = projectRepository.save(project);
+        log.info("External search triggered for project ID: {}", savedProject.getProjectId());
+
+        return mapToResponse(savedProject);
+    }
+
+    /**
+     * Get all projects marked for external search (isPublished=true AND isExternalSearch=true).
+     * Used by external teams to view projects that need external candidates.
+     *
+     * @return List of projects marked for external search
+     */
+    public List<ProjectResponseDto> getExternalSearchProjects() {
+        log.info("Fetching projects for external search");
+
+        List<Project> projects = projectRepository.findByIsPublishedAndIsExternalSearch(true, true);
+        return projects.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 }

@@ -1,8 +1,10 @@
 package com.frauas.workforce.controller;
 
 import com.frauas.workforce.DTO.ErrorResponse;
+import com.frauas.workforce.DTO.ProjectResponseDto;
 import com.frauas.workforce.DTO.RejectByProjectManagerRequest;
 import com.frauas.workforce.DTO.RequestDepartmentHeadApprovalRequest;
+import com.frauas.workforce.DTO.TriggerExternalSearchRequest;
 import com.frauas.workforce.model.Application;
 import com.frauas.workforce.service.ProjectManagerService;
 import io.swagger.v3.oas.annotations.*;
@@ -130,6 +132,57 @@ public class ProjectManagerApproveRejectController {
     public ResponseEntity<List<Application>> getAppliedApplications() {
         return ResponseEntity.ok(
                 projectManagerService.getAppliedApplications()
+        );
+    }
+
+    /**
+     * Trigger external search for a project
+     */
+    @Operation(
+            summary = "Trigger external search",
+            description = "Project Manager triggers external search for a project to find external candidates"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "External search triggered successfully"),
+            @ApiResponse(responseCode = "404", description = "Project not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/projects/{projectId}/trigger-external-search")
+    public ResponseEntity<?> triggerExternalSearch(
+            @PathVariable String projectId,
+            @RequestBody TriggerExternalSearchRequest request
+    ) {
+        try {
+            ProjectResponseDto project = projectManagerService.triggerExternalSearch(
+                    projectId,
+                    request.getProjectManagerId()
+            );
+            return ResponseEntity.ok(project);
+
+        } catch (RuntimeException e) {
+            HttpStatus status = e.getMessage().contains("not found")
+                    ? HttpStatus.NOT_FOUND
+                    : HttpStatus.BAD_REQUEST;
+
+            return ResponseEntity.status(status)
+                    .body(new ErrorResponse(e.getMessage(), status.value()));
+        }
+    }
+
+    /**
+     * Get all projects marked for external search
+     */
+    @Operation(
+            summary = "Get external search projects",
+            description = "Get all projects that are published and marked for external search (isPublished=true AND isExternalSearch=true)"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved external search projects")
+    })
+    @GetMapping("/projects/external-search")
+    public ResponseEntity<List<ProjectResponseDto>> getExternalSearchProjects() {
+        return ResponseEntity.ok(
+                projectManagerService.getExternalSearchProjects()
         );
     }
 }

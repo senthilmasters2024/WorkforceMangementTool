@@ -113,4 +113,14 @@ public interface ProjectManagerRepository extends MongoRepository<Project, Strin
      * @return true if project exists, false otherwise
      */
     boolean existsByProjectId(String projectId);
+
+    /**
+     * Find projects by publication status and external search flag.
+     * Used to get projects that are published and marked for external search.
+     *
+     * @param isPublished Boolean flag for publication status
+     * @param isExternalSearch Boolean flag for external search status
+     * @return List of projects matching both criteria
+     */
+    List<Project> findByIsPublishedAndIsExternalSearch(Boolean isPublished, Boolean isExternalSearch);
 }
