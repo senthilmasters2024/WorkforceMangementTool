@@ -69,4 +69,14 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
      * Fetch all applications for a project (audit / reporting)
      */
     List<Application> findByProjectId(String projectId);
+
+    /**
+     * Find applications by project, role, and status
+     * Used for DH approval validation - checking role capacity
+     */
+    List<Application> findByProjectIdAndProjectRoleAndCurrentStatus(
+            String projectId,
+            String projectRole,
+            ApplicationStatus status
+    );
 }

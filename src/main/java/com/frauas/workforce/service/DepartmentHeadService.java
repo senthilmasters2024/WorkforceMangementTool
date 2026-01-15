@@ -93,6 +93,38 @@ public class DepartmentHeadService {
         Project project = projectRepository.findByProjectId(application.getProjectId())
                 .orElseThrow(() -> new RuntimeException("Project not found"));
 
+        // 11.1 VALIDATION: Check role capacity before approving
+        String applicationRole = application.getProjectRole();
+        int requiredForRole = 0;
+
+        // Find the required count for this specific role
+        if (project.getRoles() != null) {
+            for (Project.RoleRequirement roleReq : project.getRoles()) {
+                if (roleReq.getRequiredRole() != null &&
+                    roleReq.getRequiredRole().equals(applicationRole)) {
+                    if (roleReq.getNumberOfEmployees() != null) {
+                        requiredForRole = Integer.parseInt(roleReq.getNumberOfEmployees());
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Count already COMPLETED applications for this project + role
+        List<Application> completedForRole = applicationRepository
+                .findByProjectIdAndProjectRoleAndCurrentStatus(
+                    application.getProjectId(),
+                    applicationRole,
+                    ApplicationStatus.COMPLETED
+                );
+
+        if (completedForRole.size() >= requiredForRole) {
+            throw new RuntimeException(
+                "Cannot approve: Role '" + applicationRole + "' already has " +
+                completedForRole.size() + " of " + requiredForRole + " required employees assigned"
+            );
+        }
+
         // 11.5. Update employee's assignedProjectId
         employee.setAssignedProjectId(application.getProjectId());
         employee.setAvailabilityStatus(AvailabilityStatus.NOT_AVAILABLE);
