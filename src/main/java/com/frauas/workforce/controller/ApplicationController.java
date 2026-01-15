@@ -17,9 +17,7 @@ import java.util.List;
 public class ApplicationController {
 
     @Autowired
-    public ApplicationService applicationService;
-
-
+    private ApplicationService applicationService;
 
 //    public ApplicationController(ApplicationService applicationService) {
 //        this.applicationService = applicationService;
