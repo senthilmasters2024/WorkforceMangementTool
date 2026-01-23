@@ -163,8 +163,62 @@ public class DepartmentHeadService {
             }
         }
 
-        // 13. Save and return the approved application
-        return applicationRepository.save(application);
+        // 13. Save the approved application
+        Application savedApplication = applicationRepository.save(application);
+
+        // 14. Check if all roles are now filled - disable further applications if so
+        checkAndDisableApplicationsIfAllRolesFilled(project);
+
+        return savedApplication;
+    }
+
+    /**
+     * Check if all roles in a project are filled and disable further applications if so.
+     * Sets isApplicationsAllowed = false when all roles are filled to stop external search.
+     *
+     * @param project The project to check
+     */
+    private void checkAndDisableApplicationsIfAllRolesFilled(Project project) {
+        if (project.getRoles() == null || project.getRoles().isEmpty()) {
+            return;
+        }
+
+        boolean allRolesFilled = true;
+
+        for (Project.RoleRequirement roleReq : project.getRoles()) {
+            int required = 0;
+            if (roleReq.getNumberOfEmployees() != null && !roleReq.getNumberOfEmployees().isEmpty()) {
+                try {
+                    required = Integer.parseInt(roleReq.getNumberOfEmployees());
+                } catch (NumberFormatException e) {
+                    required = 0;
+                }
+            }
+
+            // Skip roles with 0 required employees
+            if (required == 0) {
+                continue;
+            }
+
+            // Count COMPLETED applications for this role
+            List<Application> filledForRole = applicationRepository
+                    .findByProjectIdAndProjectRoleAndCurrentStatus(
+                            project.getProjectId(),
+                            roleReq.getRequiredRole(),
+                            ApplicationStatus.COMPLETED
+                    );
+
+            if (filledForRole.size() < required) {
+                allRolesFilled = false;
+                break;
+            }
+        }
+
+        // If all roles are filled, disable further applications
+        if (allRolesFilled) {
+            project.setIsApplicationsAllowed(false);
+            projectRepository.save(project);
+        }
     }
 
     /**

@@ -418,6 +418,7 @@ public class ProjectManagerService {
         response.setStatus(project.getStatus());
         response.setIsPublished(project.getIsPublished());
         response.setIsExternalSearch(project.getIsExternalSearch());
+        response.setIsApplicationsAllowed(project.getIsApplicationsAllowed());
         response.setCreatedBy(project.getCreatedBy());
         response.setCreatedAt(project.getCreatedAt());
         response.setUpdatedAt(project.getUpdatedAt());

@@ -61,6 +61,8 @@ public class ProjectResponseDto {
 
     private Boolean isExternalSearch;
 
+    private Boolean isApplicationsAllowed;
+
     private String createdBy;
 
     private LocalDate createdAt;

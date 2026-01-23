@@ -77,6 +77,9 @@ public class Project {
     @Field("isExternalSearch")
     private Boolean isExternalSearch = false;
 
+    @Field("isApplicationsAllowed")
+    private Boolean isApplicationsAllowed = true;
+
     @Field("createdBy")
     private String createdBy;
 
