@@ -300,6 +300,12 @@ public class ProjectManagerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
         project.setIsPublished(true);
+
+        // Automatically transition status from PLANNED to ACTIVE when publishing
+        if (project.getStatus() == ProjectStatus.PLANNED) {
+            project.setStatus(ProjectStatus.ACTIVE);
+            log.info("Project status transitioned from PLANNED to ACTIVE for project ID: {}", projectId);
+        }
 //        project.setUpdatedBy(currentUserId);
 
         Project savedProject = projectRepository.save(project);
