@@ -304,6 +304,39 @@ public class ProjectManagerController {
     }
 
     /**
+     * Mark an active project as completed.
+     *
+     * Endpoint: PATCH /api/projects/{projectId}/complete
+     *
+     * Allows the Project Manager to manually mark a project as completed.
+     * Only projects with ACTIVE status can be completed.
+     *
+     * @param projectId Path variable - unique identifier of the project to complete
+     * @param authentication Spring Security authentication object containing current user info
+     * @return ResponseEntity with HTTP 200 (OK) and completed project details on success
+     *         HTTP 400 (BAD_REQUEST) if project is not in ACTIVE status
+     *         HTTP 404 (NOT_FOUND) if project doesn't exist
+     *         HTTP 500 (INTERNAL_SERVER_ERROR) for unexpected errors
+     */
+    @PatchMapping("/{projectId}/complete")
+    public ResponseEntity<ApiResponse<ProjectResponseDto>> completeProject(
+            @PathVariable String projectId,
+            Authentication authentication) {
+        try {
+            String projectManagerId = authentication.getName();
+            ProjectResponseDto response = projectService.completeProject(projectId, projectManagerId);
+            return ResponseEntity.ok(ApiResponse.success(response, "Project marked as completed successfully"));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Cannot complete project", e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error completing project: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Failed to complete project", e.getMessage()));
+        }
+    }
+
+    /**
      * Delete a project permanently from the system.
      *
      * Endpoint: DELETE /api/projects/{projectId}

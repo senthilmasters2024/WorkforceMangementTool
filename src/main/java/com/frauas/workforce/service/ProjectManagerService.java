@@ -343,6 +343,38 @@ public class ProjectManagerService {
     }
 
     /**
+     * Mark an active project as completed.
+     *
+     * Allows the Project Manager to manually complete a project.
+     * Only projects with ACTIVE status can be marked as completed.
+     *
+     * @param projectId Unique identifier of the project to complete
+     * @param projectManagerId ID of the Project Manager completing the project
+     * @return ProjectResponseDto containing the completed project details
+     * @throws ResourceNotFoundException if no project exists with the given projectId
+     * @throws IllegalStateException if project is not in ACTIVE status
+     */
+    public ProjectResponseDto completeProject(String projectId, String projectManagerId) {
+        log.info("Completing project with ID: {} by Project Manager: {}", projectId, projectManagerId);
+
+        Project project = projectRepository.findByProjectId(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
+
+        // Validate project is in ACTIVE status
+        if (project.getStatus() != ProjectStatus.ACTIVE) {
+            throw new IllegalStateException("Only ACTIVE projects can be marked as completed. Current status: " + project.getStatus());
+        }
+
+        project.setStatus(ProjectStatus.COMPLETED);
+        project.setUpdatedBy(projectManagerId);
+
+        Project savedProject = projectRepository.save(project);
+        log.info("Project completed successfully with ID: {}", savedProject.getId());
+
+        return mapToResponse(savedProject);
+    }
+
+    /**
      * Delete a project from the system permanently.
      *
      * Removes the project from the database. This operation is irreversible.
