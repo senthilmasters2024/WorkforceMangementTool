@@ -147,6 +147,7 @@ public class ProjectManagerApproveRejectController {
             @ApiResponse(responseCode = "404", description = "Project not found",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
+
     @PostMapping("/projects/{projectId}/trigger-external-search")
     public ResponseEntity<?> triggerExternalSearch(
             @PathVariable String projectId,
