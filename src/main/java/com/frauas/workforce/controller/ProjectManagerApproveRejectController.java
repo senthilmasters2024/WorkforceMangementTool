@@ -182,8 +182,6 @@ public class ProjectManagerApproveRejectController {
     })
     @GetMapping("/projects/external-search")
     public ResponseEntity<List<ProjectResponseDto>> getExternalSearchProjects() {
-
-        System.out.println("Check cors error");
         return ResponseEntity.ok(
                 projectManagerService.getExternalSearchProjects()
         );
