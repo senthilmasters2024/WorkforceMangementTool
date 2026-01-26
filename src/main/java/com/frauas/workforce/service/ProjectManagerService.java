@@ -89,7 +89,10 @@ public class ProjectManagerService {
         project.setSelectedLocations(request.getSelectedLocations());
         project.setStatus(request.getStatus());
         project.setIsPublished(request.getIsPublished() != null ? request.getIsPublished() : false);
-        project.setCreatedBy(request.getCreatedBy());
+
+        Employee employee = employeeRepository.findByUsername(request.getCreatedBy())
+                .orElse(null);
+        project.setCreatedBy(employee.getFirstName() + " "+ employee.getLastName());
 
         // Map role requirements
         if (request.getRoles() != null) {
