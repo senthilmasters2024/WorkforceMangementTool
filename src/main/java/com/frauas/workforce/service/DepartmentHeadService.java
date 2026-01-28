@@ -128,7 +128,10 @@ public class DepartmentHeadService {
         // 11.5. Update employee's assignedProjectId
         employee.setAssignedProjectId(application.getProjectId());
         employee.setAvailabilityStatus(AvailabilityStatus.NOT_AVAILABLE);
-        employee.setSupervisor(project.getCreatedBy());
+        Employee employeesupervisor = employeeRepository.findByUsername(project.getCreatedBy())
+                .orElse(null);
+        assert employeesupervisor != null;
+        employee.setSupervisor(employeesupervisor.getFirstName() + " "+ employeesupervisor.getLastName());
         employeeRepository.save(employee);
 
         // 11.6. Set employee project dates from project dates (not today's date)
